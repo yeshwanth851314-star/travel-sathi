@@ -1,0 +1,16 @@
+node_modules
+dist
+.output
+.vinxi
+.vercel
+frontend/dist
+frontend/.output
+frontend/.vinxi
+frontend/.wrangler
+frontend/.tanstack
+frontend/.vercel
+database/supabase/.temp
+pnpm-lock.yaml
+package-lock.json
+bun.lock
+routeTree.gen.ts

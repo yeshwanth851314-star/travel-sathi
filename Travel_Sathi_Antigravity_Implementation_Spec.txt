@@ -1,0 +1,2216 @@
+TRAVEL SATHI — ANTIGRAVITY IMPLEMENTATION SPECIFICATION
+============================================================
+
+PURPOSE
+-------
+This document is the implementation handoff for the current Lovable codebase of the
+project originally named SafeTrip. The target product name is:
+
+    Travel Sathi
+    Smart Tourist Safety & Emergency Response Platform
+
+IMPORTANT:
+- Replicate the CURRENT Lovable project faithfully. Do not throw away the existing
+  architecture, database workflows, visual design system, reusable components, or
+  working logic.
+- Complete the unfinished application rather than creating a different application.
+- Preserve the existing visual language/layout wherever it already exists.
+- The current repository is a partially implemented TanStack Start + React +
+  TypeScript + Tailwind + Supabase application.
+- Make every visible button and workflow actually work. No fake buttons, dead links,
+  placeholder pages, or "coming soon" actions.
+- The final application must be deployable to Vercel from GitHub.
+- Use the existing Supabase backend and migrations as the source of truth.
+- Do not expose Supabase service-role keys in frontend code.
+- Do not replace Supabase with localStorage/mock-only state.
+
+============================================================
+1. WHAT IS ALREADY IN THE CODEBASE
+============================================================
+
+STACK
+-----
+- React 19
+- TypeScript
+- TanStack Start / TanStack Router
+- Vite
+- Tailwind CSS v4
+- shadcn/Radix UI components
+- Supabase JS
+- Supabase Auth
+- Supabase Postgres
+- Supabase Realtime
+- Leaflet + OpenStreetMap
+- TanStack React Query
+- date-fns
+- lucide-react
+- sonner
+
+PACKAGE SCRIPTS
+---------------
+npm run dev
+npm run build
+npm run build:dev
+npm run preview
+npm run lint
+npm run format
+
+CURRENT APP ARCHITECTURE
+------------------------
+src/
+  components/app/
+    AppShell.tsx
+    LeafletMap.tsx
+    MapView.tsx
+    Notifications.tsx
+    SafetyBrowse.tsx
+    Timeline.tsx
+    badges.tsx
+    states.tsx
+
+  components/ui/
+    shadcn/Radix UI component library
+
+  integrations/supabase/
+    client.ts
+    client.server.ts
+    auth-attacher.ts
+    auth-middleware.ts
+    cron-auth.ts
+    previewAuthStorage.ts
+    types.ts
+
+  lib/
+    auth.ts
+    constants.ts
+    geo.ts
+    queries.ts
+    error-capture.ts
+    error-page.ts
+    lovable-error-reporting.ts
+    utils.ts
+
+  routes/
+    __root.tsx
+    index.tsx
+    login.tsx
+    _authenticated/route.tsx
+    _authenticated/home.tsx
+    _authenticated/tourist.tsx
+    _authenticated/responder.tsx
+    _authenticated/admin.tsx
+
+The route tree currently contains only:
+- /
+- /login
+- /home
+- /tourist
+- /responder
+- /admin
+
+The role layout routes already define navigation links for many child pages,
+but those child route files DO NOT YET EXIST.
+
+============================================================
+2. CURRENTLY WORKING / PARTIALLY IMPLEMENTED
+============================================================
+
+AUTHENTICATION
+--------------
+Already present:
+- Supabase email/password sign in
+- Supabase registration
+- Full name during registration
+- Authenticated route guard
+- Role lookup
+- Role-based redirect
+- Sign out
+- Tourist / responder / admin route shells
+
+Needs improvement:
+- Forgot password
+- Reset password
+- Auth state listener
+- Better loading/auth states
+- Profile completion
+- Proper post-email-confirmation flow
+- Friendly auth errors
+- Production auth configuration documentation
+
+BRAND
+------
+Current UI still says "SafeTrip" in AppShell and metadata.
+Rename the visible product to "Travel Sathi" consistently:
+- browser title
+- metadata
+- OpenGraph metadata
+- header/logo
+- login page
+- empty/error pages
+- all user-facing copy
+
+Do NOT rename database concepts unnecessarily.
+
+DATABASE
+--------
+The current Supabase migration already provides a strong foundation.
+
+Enums:
+- app_role
+- incident_kind
+- incident_severity
+- incident_status
+
+Main tables:
+1. profiles
+2. tourist_profiles
+3. user_roles
+4. audit_logs
+5. emergency_contacts
+6. incidents
+7. incident_assignments
+8. incident_locations
+9. incident_notes
+10. incident_timeline
+11. notifications
+12. safety_information
+13. emergency_resources
+14. safety_alerts
+
+Existing database functions/workflows include:
+- has_role
+- is_staff
+- log_audit
+- handle_new_user
+- set_user_role
+- ensure_single_primary
+- notify_staff
+- kind_label
+- on_incident_created
+- on_location_added
+- on_note_added
+- trigger_sos
+- update_incident_status
+- assign_incident
+- on_info_change
+- on_resource_change
+- on_alert_change
+
+Existing triggers include:
+- automatic profile creation
+- updated_at maintenance
+- incident creation workflow
+- location workflow
+- note timeline workflow
+- safety information notifications
+- resource audit
+- alert notifications/audit
+
+Existing security:
+- Row Level Security policies
+- role checks
+- staff-only operations
+- tourist-owned data restrictions
+- notification ownership
+- admin management for safety info/resources/alerts
+
+IMPORTANT:
+Do not bypass these database security rules from the frontend.
+
+============================================================
+3. EXISTING SHARED COMPONENTS — KEEP AND REUSE
+============================================================
+
+AppShell
+--------
+Already provides:
+- desktop sidebar
+- mobile navigation
+- notification icon
+- unread count
+- sign out
+- role label
+- responsive content shell
+
+MapView / LeafletMap
+--------------------
+Already provides:
+- Leaflet map
+- OpenStreetMap tiles
+- marker types:
+  - me
+  - incident
+  - resource
+- automatic map centering/fitting
+- popup labels
+- lazy client-side loading
+
+NotificationsPage
+------------------
+Already provides:
+- notification listing
+- unread count
+- mark one read
+- mark all read
+- realtime invalidation
+- incident reference display
+
+SafetyBrowse
+------------
+Already provides:
+- safety information search
+- category filtering
+- verified-only filter
+- published-only filtering
+- verified badge
+- source
+- verification date
+- update date
+- review date
+
+ResourceDirectory
+------------------
+Already provides:
+- resource search
+- resource type filter
+- phone
+- address
+- hours
+- verification state
+
+AlertsList
+----------
+Already provides:
+- active safety alerts
+- severity
+- area
+- timestamp
+
+Timeline
+--------
+Already provides:
+- chronological incident timeline
+- status/event/details
+- realtime query invalidation
+
+Reusable states:
+- Loading
+- Empty
+- ErrorState
+- PageHeader
+
+Reusable badges:
+- severity
+- verified
+- demo
+
+DO NOT duplicate these components unnecessarily.
+Extend them when needed.
+
+============================================================
+4. CURRENT ROADMAP / WHAT IS MISSING
+============================================================
+
+The existing roadmap explicitly marks these as open:
+
+ROOT
+----
+- landing page
+- forgot/reset password
+- privacy
+- terms
+- public safety pages
+- public resources pages
+- fonts
+- Toaster
+- auth state listener
+- app metadata
+- end-to-end tests
+
+TOURIST
+-------
+- dashboard
+- SOS
+- active emergency
+- report incident
+- request assistance
+- my incidents
+- incident detail
+- emergency contacts
+- safety information
+- safety alerts
+- emergency resources
+- map
+- notifications
+- profile
+
+RESPONDER
+---------
+- dashboard
+- active incidents with filters
+- incident detail
+- accept
+- assign
+- status changes
+- notes
+- resolve
+- assigned incidents
+- map
+- response history
+- notifications
+- profile
+
+ADMIN
+-----
+- dashboard
+- analytics
+- incidents
+- users/roles
+- safety information CRUD
+- resources CRUD
+- alerts CRUD
+- map
+- audit history
+- notifications
+
+============================================================
+5. ROUTES TO BUILD
+============================================================
+
+Create actual TanStack Router route files for every route below.
+
+PUBLIC
+------
+/
+  Landing page
+
+/login
+  Login/register
+
+/forgot-password
+  Request password reset
+
+/reset-password
+  Set a new password
+
+/privacy
+  Privacy policy
+
+/terms
+  Terms
+
+/public/safety
+  Public verified safety information
+
+/public/resources
+  Public emergency resources
+
+TOURIST
+-------
+/tourist
+  Tourist dashboard
+
+/tourist/sos
+  Dedicated SOS page
+
+/tourist/emergency
+  Active emergency / live response page
+
+/tourist/report
+  Report incident
+
+/tourist/assist
+  Request assistance
+
+/tourist/incidents
+  My incidents
+
+/tourist/incidents/$incidentId
+  Incident detail + timeline + map + status
+
+/tourist/contacts
+  Emergency contacts
+
+/tourist/safety
+  Safety information
+
+/tourist/alerts
+  Safety alerts
+
+/tourist/resources
+  Emergency resources
+
+/tourist/map
+  Safety map
+
+/tourist/notifications
+  Notifications
+
+/tourist/profile
+  Profile/settings
+
+RESPONDER
+---------
+/responder
+  Responder dashboard
+
+/responder/incidents
+  Active incident queue
+
+/responder/incidents/$incidentId
+  Incident detail and response controls
+
+/responder/assigned
+  Assigned to me
+
+/responder/map
+  Incident map
+
+/responder/history
+  Response history
+
+/responder/notifications
+  Notifications
+
+/responder/profile
+  Profile
+
+ADMIN
+-----
+/admin
+  Admin dashboard
+
+/admin/incidents
+  All incidents
+
+/admin/incidents/$incidentId
+  Incident management detail
+
+/admin/users
+  Users and roles
+
+/admin/safety
+  Safety information CRUD
+
+/admin/resources
+  Emergency resource CRUD
+
+/admin/alerts
+  Safety alert CRUD
+
+/admin/map
+  Global incident/resource map
+
+/admin/audit
+  Audit history
+
+/admin/notifications
+  Notifications
+
+============================================================
+6. TOURIST EXPERIENCE — IMPLEMENT IN FULL
+============================================================
+
+A. TOURIST DASHBOARD
+--------------------
+Build a polished safety-first dashboard.
+
+Top area:
+- Travel Sathi branding
+- greeting
+- current safety status
+- notification icon
+- emergency shortcut
+
+Primary CTA:
+- very prominent SOS button
+- accessible on desktop and mobile
+
+Dashboard cards:
+- Active emergency
+- My open incidents
+- Safety alerts
+- Nearby emergency resources
+- Current location status
+
+Quick actions:
+- SOS
+- Report incident
+- Request assistance
+- Share location
+- Emergency contacts
+- Safety map
+
+Use real Supabase data.
+
+B. SOS
+-------
+This is the most important workflow.
+
+Flow:
+1. Tourist opens /tourist/sos
+2. Show large SOS control.
+3. Explain what happens before activation.
+4. On activation show confirmation dialog.
+5. Request browser geolocation.
+6. Call the existing Supabase RPC:
+       trigger_sos(_lat, _lng, _accuracy, _location_text, _description)
+7. RPC already prevents duplicate active SOS incidents.
+8. After success redirect to /tourist/emergency or incident detail.
+9. Show:
+   - incident reference
+   - current status
+   - location sharing state
+   - emergency contacts
+   - call emergency service actions
+   - live timeline
+10. Realtime updates should change the UI when responder actions happen.
+11. Tourist must be able to cancel only when database rules permit it.
+
+IMPORTANT:
+- Do not fake SOS success.
+- Do not create a local-only SOS.
+- Handle denied location permission gracefully.
+- SOS must still be creatable without coordinates if necessary.
+- Clearly explain that location sharing improves response.
+
+C. ACTIVE EMERGENCY
+-------------------
+Show:
+- critical status banner
+- incident reference
+- current location
+- map
+- location-sharing state
+- responder if assigned
+- response status
+- timeline
+- emergency contacts
+- call emergency service button
+- cancel button when allowed
+
+Status progression:
+submitted
+received
+assigned
+accepted
+en_route
+assistance_provided
+resolved
+cancelled
+
+Use the existing database transition RPC:
+update_incident_status()
+
+D. REPORT INCIDENT
+------------------
+Form fields:
+- incident category
+- severity
+- description
+- occurred date/time
+- current location
+- location sharing
+- contact information if needed
+- optional evidence upload
+
+Categories already defined in constants:
+Theft
+Harassment
+Medical Emergency
+Accident
+Lost Person
+Lost Property
+Unsafe Location
+Natural Hazard
+Suspicious Activity
+Transportation Problem
+Other
+
+On submit:
+- validate
+- create incident in Supabase
+- add location record if available
+- show generated incident reference
+- redirect to detail
+- display timeline
+
+E. REQUEST ASSISTANCE
+---------------------
+Use incident_kind = assistance.
+
+Categories:
+- Medical assistance
+- Police/security assistance
+- Lost person assistance
+- Transport assistance
+- Tourist assistance
+- Embassy/consular information
+- Other
+
+The workflow should use the same incident/assignment/status architecture.
+
+F. MY INCIDENTS
+---------------
+Show:
+- incident reference
+- kind
+- category
+- severity
+- status
+- created time
+- assigned responder
+- active/resolved state
+
+Filters:
+- all
+- active
+- resolved
+- SOS
+- reports
+- assistance
+
+Clicking an incident opens its detail page.
+
+G. INCIDENT DETAIL
+------------------
+Show:
+- incident reference
+- severity badge
+- status badge
+- category
+- description
+- timestamps
+- current location
+- map
+- responder
+- timeline
+- location sharing
+- resolution
+
+Realtime update the page.
+
+H. EMERGENCY CONTACTS
+---------------------
+CRUD:
+- add
+- edit
+- delete/deactivate
+- set primary
+- priority
+- relationship
+- phone
+- email
+
+Database already has:
+emergency_contacts
+
+Make "Call" buttons use tel: links on supported devices.
+
+I. SAFETY INFORMATION
+---------------------
+Reuse SafetyInfoBrowser.
+
+Add:
+- polished cards
+- category filter
+- verified-only filter
+- search
+- source
+- last updated
+- review date
+- verified badge
+
+Only display published information to tourists.
+
+J. SAFETY ALERTS
+----------------
+Reuse AlertsList.
+
+Add:
+- full alert detail
+- severity
+- area
+- start/end
+- active state
+- notification integration
+
+K. EMERGENCY RESOURCES
+----------------------
+Reuse ResourceDirectory.
+
+Add:
+- map action
+- call action
+- directions action
+- resource details
+- verified state
+
+Use:
+tel:<phone>
+and a maps/directions URL where appropriate.
+
+L. SAFETY MAP
+-------------
+Combine:
+- tourist location
+- incident locations user is allowed to see
+- verified emergency resources
+- safety alert areas if representable
+
+Do not expose another tourist's private data.
+
+M. NOTIFICATIONS
+----------------
+Already partially implemented.
+
+Ensure:
+- unread count
+- mark read
+- mark all read
+- click notification to related incident
+- realtime updates
+
+N. PROFILE
+----------
+Allow tourist to edit:
+- full name
+- phone
+- nationality
+- home country
+- languages
+- medical notes
+- travel notes
+
+Be privacy-conscious:
+medical notes are sensitive and must never be publicly exposed.
+
+============================================================
+7. RESPONDER EXPERIENCE — IMPLEMENT IN FULL
+============================================================
+
+RESPONDER DASHBOARD
+-------------------
+Show real metrics:
+- active incidents
+- critical incidents
+- assigned to me
+- unresolved
+- resolved today
+
+Show recent active incidents.
+
+ACTIVE INCIDENTS
+----------------
+Filters:
+- severity
+- kind
+- status
+- category
+- location/area if available
+
+Sort critical/high first.
+
+RESPONDER INCIDENT DETAIL
+--------------------------
+Display:
+- incident reference
+- tourist/report information allowed by RLS
+- location
+- map
+- description
+- severity
+- status
+- timeline
+- notes
+- responder assignment
+
+Actions:
+- accept
+- change status
+- add note
+- resolve
+- navigate to location
+
+Use database RPCs, not direct unsafe status edits.
+
+Existing RPC:
+update_incident_status()
+
+ASSIGNMENT
+----------
+Admin/staff can assign incidents.
+Existing RPC:
+assign_incident(_incident_id, _responder_id)
+
+For responder:
+- accepting an assigned incident must respect database ownership rules.
+- if unassigned, accepting should use existing database workflow.
+
+NOTES
+-----
+Use incident_notes.
+Add note form.
+After note:
+- invalidate timeline
+- refresh detail
+- show toast
+
+MAP
+---
+Show incidents visible to responder.
+Critical incidents should be visually prominent.
+
+HISTORY
+-------
+Show resolved/cancelled incidents handled by the responder.
+
+NOTIFICATIONS
+-------------
+Show:
+- newly assigned incidents
+- status changes
+- critical alerts
+- safety updates
+
+PROFILE
+-------
+Allow responder to update allowed profile fields.
+
+============================================================
+8. ADMIN EXPERIENCE — IMPLEMENT IN FULL
+============================================================
+
+ADMIN DASHBOARD
+---------------
+Real-time/queried KPIs:
+- total incidents
+- active incidents
+- critical incidents
+- SOS count
+- assistance requests
+- incident reports
+- resolved incidents
+- average response time if calculable
+- active alerts
+- registered tourists
+- responders
+
+Charts:
+- incidents by type
+- incidents by severity
+- incidents by status
+- incidents over time
+- response metrics
+
+Use Recharts already installed.
+
+ADMIN INCIDENTS
+---------------
+Table with:
+- ref
+- type
+- category
+- severity
+- status
+- tourist
+- responder
+- created time
+- location
+
+Filters and search.
+
+ADMIN INCIDENT DETAIL
+---------------------
+Admin can:
+- inspect incident
+- assign responder
+- change valid status
+- add notes
+- resolve
+- view timeline
+- view location history
+
+Do not allow impossible status transitions.
+
+ADMIN USERS
+-----------
+Display:
+- users
+- role
+- name
+- email
+- phone
+- created date
+
+Role management:
+- tourist
+- responder
+- admin
+
+Use the existing set_user_role RPC.
+
+Never let a normal tourist access role management.
+
+ADMIN SAFETY INFORMATION
+------------------------
+Full CRUD:
+- create
+- edit
+- publish/unpublish
+- verify/unverify
+- category
+- source
+- verification date
+- review date
+- delete
+
+When verified + published:
+existing DB trigger can notify tourists.
+
+ADMIN RESOURCES
+---------------
+Full CRUD:
+- name
+- type
+- phone
+- address
+- hours
+- latitude
+- longitude
+- verified
+- last verified date
+
+ADMIN ALERTS
+------------
+Full CRUD:
+- title
+- message
+- severity
+- area
+- starts_at
+- ends_at
+- active/inactive
+- demo flag
+
+Publishing/activating an alert should trigger notifications using the existing DB
+workflow.
+
+ADMIN MAP
+---------
+Global operational map:
+- incidents
+- resources
+- relevant locations
+
+Use role-appropriate access.
+
+ADMIN AUDIT
+-----------
+Display audit_logs.
+Filters:
+- action
+- entity
+- actor
+- date
+- entity ID
+
+Audit data must be read-only in UI.
+
+============================================================
+9. REALTIME REQUIREMENTS
+============================================================
+
+The current code already has useRealtimeInvalidate().
+
+Extend it carefully.
+
+Realtime should update:
+- incidents
+- incident timeline
+- notifications
+- safety alerts
+- safety information where useful
+- assignments/notes where useful
+
+Do not create dozens of duplicate channels on every render.
+
+Use stable channel names where practical.
+
+When a realtime update occurs:
+- invalidate the relevant React Query key
+- do not mutate local state incorrectly
+- keep loading states stable
+- avoid UI flicker
+
+============================================================
+10. LOCATION REQUIREMENTS
+============================================================
+
+Existing:
+src/lib/geo.ts
+
+It already calls:
+navigator.geolocation.getCurrentPosition()
+
+Build a proper location UX around it.
+
+States:
+1. Permission not requested
+2. Permission granted
+3. Permission denied
+4. Location unavailable
+5. Location loading
+6. Location available
+
+Show accuracy.
+
+Never claim an exact address unless a real geocoding service/API has been used.
+
+If reverse geocoding is implemented:
+- use a proper API
+- keep API key server-side if required
+- rate limit appropriately
+- handle failure
+
+For hackathon MVP, coordinates + "Current location" is acceptable.
+
+============================================================
+11. MAP REQUIREMENTS
+============================================================
+
+Continue using Leaflet + OpenStreetMap.
+
+Do not introduce Google Maps unless there is a clear reason.
+
+Map must:
+- load only on client
+- avoid SSR Leaflet errors
+- show useful markers
+- fit bounds
+- work on mobile
+- provide popups
+- have accessible alternative information
+
+If adding current-location tracking:
+- don't continuously track by default
+- start only after explicit consent
+- stop when no longer needed
+- stop after incident resolution
+
+============================================================
+12. NOTIFICATION REQUIREMENTS
+============================================================
+
+Existing notifications table:
+- id
+- user_id
+- type
+- title
+- message
+- priority
+- incident_id
+- is_read
+- created_at
+
+Implement:
+- notification center
+- unread badge
+- mark read
+- mark all read
+- notification-to-incident navigation
+- realtime updates
+- toast for important incoming events where appropriate
+
+Do not use browser push notifications unless implemented correctly.
+For the hackathon, in-app realtime notifications are sufficient.
+
+============================================================
+13. EVIDENCE / FILE UPLOAD
+============================================================
+
+The database has incidents.evidence_path and the roadmap mentions evidence storage,
+but the current UI does not yet implement the full evidence workflow.
+
+Implement Supabase Storage safely.
+
+Requirements:
+- create/use a private bucket
+- upload evidence
+- validate file size
+- validate MIME type
+- avoid executable uploads
+- generate signed URLs only for authorized users
+- save storage path in incidents.evidence_path
+- allow authorized responder/admin access
+- allow reporter to see own evidence
+
+Do not put private storage URLs permanently into public database fields.
+
+Suggested safe demo limits:
+- image: jpg/jpeg/png/webp
+- optional PDF
+- max size around 5–10 MB
+
+============================================================
+14. DATABASE / SECURITY REQUIREMENTS
+============================================================
+
+The existing migration has RLS. Preserve it.
+
+Before adding any new table:
+- define RLS
+- define explicit policies
+- define indexes
+- define ownership rules
+- add necessary relationships
+
+Critical privacy boundaries:
+TOURIST:
+- own profile
+- own contacts
+- own incidents
+- own notifications
+- own incident locations
+- only public published safety info/resources/active alerts
+
+RESPONDER:
+- staff-authorized incident access
+- assigned/operational data
+- notes according to RLS
+
+ADMIN:
+- administrative access
+
+Never:
+- expose service_role key
+- use service_role key in React
+- disable RLS
+- use "allow all" policies
+- trust role values from client
+- trust client-provided reporter_id
+
+The database already defaults auth.uid() in important places. Keep that pattern.
+
+============================================================
+15. AUTH / ROLE CREATION
+============================================================
+
+Current database creates profiles on auth user creation.
+
+Implement a safe initial role strategy.
+
+Recommended:
+- new public registrations become tourist by default
+- responder/admin roles are granted only through admin-controlled workflow or secure
+  setup process
+- never allow the signup form to choose "admin"
+
+For local/demo setup, provide a documented SQL seed/setup procedure for creating:
+- one tourist
+- one responder
+- one admin
+
+Do not hard-code demo passwords into production frontend code.
+
+============================================================
+16. LANDING PAGE
+============================================================
+
+Replace the current blank Lovable placeholder at /.
+
+Build Travel Sathi landing page with:
+
+Hero:
+"Travel with confidence. Help when it matters."
+
+Supporting message explaining:
+- SOS
+- verified safety information
+- emergency assistance
+- location sharing
+- emergency coordination
+
+Primary actions:
+- Get Started
+- Sign In
+
+Feature sections:
+- One-tap SOS
+- Live location sharing
+- Verified safety information
+- Emergency assistance
+- Trusted emergency resources
+- Real-time response tracking
+
+Safety-first CTA:
+"Need emergency help?"
+with clear link to sign in / emergency information.
+
+Do not make the landing page a fake marketing-only shell.
+All CTA buttons must route correctly.
+
+============================================================
+17. DESIGN / UX REQUIREMENTS
+============================================================
+
+IMPORTANT: replicate the current Lovable visual identity rather than redesigning
+from scratch.
+
+Current design system:
+- warm off-white background
+- white cards
+- blue/teal primary tone
+- red destructive/emergency tone
+- amber warning
+- rounded cards
+- Figtree body font
+- Outfit/display headings
+- responsive desktop/mobile layouts
+- shadcn-style controls
+
+Emergency UX:
+- red/critical color only where appropriate
+- SOS must be obvious
+- never hide critical actions inside menus
+- confirmation before accidental SOS activation
+- clear success/failure feedback
+- no ambiguous status
+
+Accessibility:
+- keyboard accessible
+- visible focus
+- labels for all fields
+- aria labels where needed
+- sufficient contrast
+- buttons must have meaningful text
+- dialogs must trap focus correctly
+
+Mobile:
+- emergency actions must be easy to reach
+- bottom navigation should remain useful
+- map must fit screen
+- forms must not overflow
+- tables should become cards or scroll safely
+
+============================================================
+18. ERROR HANDLING
+============================================================
+
+Every network/database operation needs:
+- loading state
+- success state
+- error state
+- retry where useful
+- toast for action feedback
+
+Never swallow errors.
+
+For SOS:
+- if geolocation fails, explain clearly
+- if RPC fails, show retry
+- do not claim SOS was sent
+
+For incident submission:
+- prevent duplicate submissions while busy
+- disable submit while processing
+- show incident reference after success
+
+For admin CRUD:
+- show validation errors
+- show save/delete confirmation
+- refresh affected lists
+
+============================================================
+19. DATA VALIDATION
+============================================================
+
+Use Zod/react-hook-form where useful.
+
+Validate:
+- required fields
+- phone format
+- email
+- description length
+- incident category
+- severity
+- dates
+- file size/type
+- latitude/longitude ranges
+
+Never trust frontend validation alone.
+Keep database constraints/RLS as final protection.
+
+============================================================
+20. QUERY / REACT QUERY REQUIREMENTS
+============================================================
+
+Extend src/lib/queries.ts.
+
+Create reusable hooks such as:
+- useTouristProfile
+- useEmergencyContacts
+- useIncident
+- useIncidents
+- useIncidentTimeline
+- useIncidentLocations
+- useNotifications
+- useSafetyInfo
+- useResources
+- useAlerts
+- useResponders
+- useAuditLogs
+- useDashboardStats
+
+Use query keys consistently.
+
+After mutations:
+- invalidate the exact affected queries
+- navigate only after confirmed success
+
+Do not fetch unlimited rows.
+Use pagination or sensible limits for admin tables.
+
+============================================================
+21. BUTTON / ACTION AUDIT
+============================================================
+
+Perform a complete project-wide button audit.
+
+Every button must:
+- have a real handler
+- perform the intended action
+- show loading state
+- show success/error feedback
+- navigate if it is navigation
+- never be a placeholder
+
+Audit:
+- all nav links
+- all CTA buttons
+- all forms
+- all dialogs
+- all dropdown actions
+- all table actions
+- all map actions
+- all SOS actions
+- all call/direction links
+- all CRUD buttons
+
+Search code for:
+- "TODO"
+- "coming soon"
+- "not implemented"
+- empty onClick
+- href="#"
+- placeholder links
+- console-only actions
+
+Remove or implement all of them.
+
+============================================================
+22. DEMO DATA
+============================================================
+
+The database supports is_demo fields for:
+- safety_information
+- emergency_resources
+- safety_alerts
+
+Use clearly marked demo data.
+
+Do NOT fake live incidents in the production UI.
+
+For hackathon presentation, seed realistic demo records:
+- several safety resources
+- several safety information cards
+- 2–3 active alerts
+- optionally controlled demo incidents
+
+Clearly label demo content as DEMO where appropriate.
+
+============================================================
+23. HACKATHON DEMO FLOW
+============================================================
+
+The final demo should work as follows:
+
+STEP 1
+------
+Open Travel Sathi.
+
+STEP 2
+------
+Tourist signs in.
+
+STEP 3
+------
+Tourist dashboard shows:
+- safety status
+- alerts
+- quick actions
+- SOS
+
+STEP 4
+------
+Tourist opens Safety Information.
+Show verified content.
+
+STEP 5
+------
+Tourist opens Map.
+Show current location and emergency resources.
+
+STEP 6
+------
+Tourist triggers SOS.
+
+STEP 7
+------
+Browser requests location.
+Tourist grants location.
+
+STEP 8
+------
+Database creates incident.
+Tourist sees:
+"Emergency request received"
+with incident reference.
+
+STEP 9
+------
+Open responder/admin account in another browser/tab.
+
+STEP 10
+-------
+New SOS appears on responder/admin dashboard through realtime.
+
+STEP 11
+-------
+Responder opens incident.
+
+STEP 12
+-------
+Responder accepts it.
+
+STEP 13
+-------
+Tourist receives realtime notification/status update.
+
+STEP 14
+-------
+Responder changes:
+accepted -> en_route -> assistance_provided -> resolved
+
+STEP 15
+-------
+Tourist sees the entire timeline update.
+
+This is the most important end-to-end demonstration.
+
+============================================================
+24. TEST ACCOUNTS / DEMO SETUP
+============================================================
+
+Document how to create test users.
+
+Suggested roles:
+- tourist@test.local
+- responder@test.local
+- admin@test.local
+
+Do not put real credentials in this file or frontend.
+
+Provide a separate local setup instruction describing how to assign roles using
+Supabase SQL or the admin UI.
+
+============================================================
+25. VERCEL + GITHUB DEPLOYMENT
+============================================================
+
+TARGET:
+GitHub repository -> Vercel -> production website
+Supabase remains the backend/database/auth.
+
+STEP 1 — GITHUB
+---------------
+Push the completed project to GitHub.
+
+Verify repository includes:
+- src/
+- supabase/
+- package.json
+- vite.config.ts
+- tsconfig.json
+- public/
+- all migration files
+
+DO NOT commit:
+- node_modules
+- local secret files
+- service-role keys
+- generated build directories
+
+IMPORTANT:
+The current zip contains a .env file with Supabase project configuration.
+Do not blindly commit .env.
+
+For production, configure environment variables in Vercel instead.
+
+STEP 2 — VERCEL
+---------------
+Import the GitHub repository into Vercel.
+
+Build command:
+    npm run build
+
+Install command:
+    npm install
+
+Use the framework/build configuration generated by the existing TanStack Start/Vite
+setup. Do not replace the project with a plain static Vite SPA.
+
+If Vercel requires an explicit output/framework setting for the current TanStack Start
+version, configure it according to the current TanStack Start/Vercel deployment
+requirements rather than inventing a custom server.
+
+STEP 3 — VERCEL ENVIRONMENT VARIABLES
+--------------------------------------
+Add:
+
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+
+Use the values from the existing local .env only as deployment configuration.
+Do not expose or add a Supabase service-role secret to VITE_* variables.
+
+If server-only Supabase environment variables are needed by any new server route,
+add them as non-VITE environment variables in Vercel and never import them into
+client components.
+
+STEP 4 — SUPABASE AUTH URLS
+---------------------------
+In Supabase Authentication settings configure:
+- Site URL = production Vercel URL
+- Redirect URLs = production Vercel URL + required auth callback/reset paths
+- localhost URLs for development
+
+Password reset and email confirmation must use valid production redirect URLs.
+
+STEP 5 — SUPABASE DATABASE
+--------------------------
+Run the included migration files against the intended Supabase project.
+
+Confirm:
+- tables exist
+- functions exist
+- triggers exist
+- RLS is enabled
+- policies exist
+- realtime is enabled for tables that need it
+- storage bucket exists for evidence if implemented
+
+STEP 6 — STORAGE
+----------------
+If evidence upload is implemented:
+- create the required private bucket
+- configure storage RLS/policies
+- test upload/download from tourist/responder/admin roles
+
+STEP 7 — TEST PRODUCTION
+------------------------
+After Vercel deployment test:
+- /
+- /login
+- registration
+- email confirmation
+- password reset
+- tourist dashboard
+- SOS
+- location permission
+- report incident
+- assistance
+- contacts
+- notifications
+- map
+- responder login
+- incident assignment
+- status transitions
+- admin login
+- CRUD
+- logout
+
+============================================================
+26. VERCEL-SPECIFIC CAUTIONS
+============================================================
+
+This is TanStack Start, not a plain Vite SPA.
+
+Keep:
+- vite.config.ts
+- TanStack Start
+- current server entry
+- src/server.ts
+
+Do not:
+- convert to Next.js
+- remove TanStack Start
+- replace the server entry with a static SPA fallback
+- remove SSR/server capabilities just to make deployment "easy"
+
+Run locally before deployment:
+    npm install
+    npm run lint
+    npm run build
+    npm run preview
+
+The build must pass before pushing.
+
+============================================================
+27. ENVIRONMENT SECURITY
+============================================================
+
+Current .env contains:
+- SUPABASE_PROJECT_ID
+- SUPABASE_PUBLISHABLE_KEY
+- SUPABASE_URL
+- VITE_SUPABASE_PROJECT_ID
+- VITE_SUPABASE_PUBLISHABLE_KEY
+- VITE_SUPABASE_URL
+
+The publishable Supabase key is designed for client use when RLS is correctly
+configured. The service-role key must NEVER be used in frontend code.
+
+Keep .env out of GitHub unless the project intentionally uses a safe local-example
+file.
+
+Create:
+.env.example
+
+Example:
+
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+
+If the code requires additional server variables, list names only in .env.example,
+not actual secrets.
+
+============================================================
+28. DATABASE INDEXES / PERFORMANCE
+============================================================
+
+Before finalizing, ensure indexes exist for common queries:
+- incidents.reporter_id
+- incidents.assigned_responder_id
+- incidents.status
+- incidents.severity
+- incidents.kind
+- incidents.created_at
+- incident_timeline.incident_id
+- incident_locations.incident_id
+- notifications.user_id
+- notifications.is_read
+- safety_alerts.is_active
+- safety_information.is_published
+- user_roles.user_id
+
+Do not add indexes blindly; verify existing migration/index definitions first.
+
+============================================================
+29. SECURITY TEST MATRIX
+============================================================
+
+Test that:
+
+Tourist A cannot:
+- read Tourist B's incidents
+- read Tourist B's contacts
+- read Tourist B's notifications
+- edit another user's profile
+- assign responders
+- edit safety information
+- edit alerts
+- edit resources
+- view private evidence belonging to another tourist
+
+Responder cannot:
+- change arbitrary users' roles
+- edit admin configuration unless policy allows
+- modify an incident outside allowed workflow
+
+Admin can:
+- manage responders/users
+- manage safety content
+- manage resources
+- manage alerts
+- manage incidents
+- inspect audit logs
+
+Also test:
+- unauthenticated users cannot access role dashboards
+- invalid UUIDs do not crash pages
+- direct URL access respects role guards
+
+============================================================
+30. E2E TESTS
+============================================================
+
+Add Playwright or the project's appropriate end-to-end framework.
+
+Minimum tests:
+
+AUTH
+----
+- register
+- login
+- logout
+- forgot password
+- protected route redirect
+
+TOURIST
+-------
+- dashboard loads
+- safety info loads
+- resources load
+- alerts load
+- contacts CRUD
+- report incident
+- request assistance
+- SOS creation
+- incident detail
+- notification read
+
+RESPONDER
+---------
+- dashboard loads
+- active incident visible
+- accept incident
+- add note
+- status transition
+- resolve incident
+
+ADMIN
+-----
+- dashboard loads
+- user list
+- role management
+- safety CRUD
+- resource CRUD
+- alert CRUD
+- audit list
+
+REALTIME
+--------
+- responder action changes tourist incident status
+- new notification appears
+
+============================================================
+31. ACCESSIBILITY / EMERGENCY READINESS TEST
+============================================================
+
+Keyboard:
+- all primary actions reachable
+- SOS reachable
+- forms usable
+
+Mobile:
+- 320px–430px width
+- SOS visible
+- bottom navigation usable
+- map usable
+- no horizontal overflow
+
+Failure:
+- offline-ish network failure gives a clear error
+- location denied gives clear alternative
+- database error does not claim success
+
+Emergency readiness:
+- SOS requires minimal interaction
+- critical state is visually obvious
+- incident reference always visible
+- status is explicit
+- contact buttons work
+
+============================================================
+32. CODE QUALITY RULES
+============================================================
+
+Keep TypeScript strict.
+
+Do not:
+- use any unnecessarily
+- duplicate query logic
+- duplicate UI components
+- bypass RLS
+- put Supabase admin secrets in browser
+- hard-code user IDs
+- hard-code responder IDs
+- hard-code incident IDs
+
+Prefer:
+- reusable components
+- reusable hooks
+- typed database data
+- small route components
+- accessible shadcn controls
+- clear mutation functions
+
+Keep routeTree.gen.ts generated by TanStack Router.
+Do not manually maintain it if the project build regenerates it.
+
+============================================================
+33. FINAL PROJECT STRUCTURE TARGET
+============================================================
+
+A reasonable completed structure:
+
+src/
+  components/
+    app/
+      AppShell.tsx
+      MapView.tsx
+      LeafletMap.tsx
+      Notifications.tsx
+      SafetyBrowse.tsx
+      Timeline.tsx
+      badges.tsx
+      states.tsx
+      ...
+    forms/
+      ...
+    dashboard/
+      ...
+    incidents/
+      ...
+    admin/
+      ...
+    responder/
+      ...
+    tourist/
+      ...
+
+  hooks/
+    ...
+
+  lib/
+    auth.ts
+    constants.ts
+    geo.ts
+    queries.ts
+    mutations.ts
+    validation.ts
+    ...
+
+  routes/
+    __root.tsx
+    index.tsx
+    login.tsx
+    forgot-password.tsx
+    reset-password.tsx
+    privacy.tsx
+    terms.tsx
+    public/
+      safety.tsx
+      resources.tsx
+    _authenticated/
+      route.tsx
+      home.tsx
+      tourist.tsx
+      tourist/
+        sos.tsx
+        emergency.tsx
+        report.tsx
+        assist.tsx
+        incidents.tsx
+        incidents.$incidentId.tsx
+        contacts.tsx
+        safety.tsx
+        alerts.tsx
+        resources.tsx
+        map.tsx
+        notifications.tsx
+        profile.tsx
+      responder.tsx
+      responder/
+        incidents.tsx
+        incidents.$incidentId.tsx
+        assigned.tsx
+        map.tsx
+        history.tsx
+        notifications.tsx
+        profile.tsx
+      admin.tsx
+      admin/
+        incidents.tsx
+        incidents.$incidentId.tsx
+        users.tsx
+        safety.tsx
+        resources.tsx
+        alerts.tsx
+        map.tsx
+        audit.tsx
+        notifications.tsx
+
+supabase/
+  migrations/
+  ...
+
+============================================================
+34. IMPLEMENTATION ORDER
+============================================================
+
+Do NOT attempt everything randomly.
+
+PHASE 1 — FOUNDATION
+--------------------
+1. Rename SafeTrip -> Travel Sathi
+2. Replace root placeholder
+3. Configure metadata
+4. Add toaster
+5. Add auth state listener
+6. Add error/loading states
+7. Add forgot/reset password
+8. Add .env.example
+
+PHASE 2 — TOURIST
+-----------------
+1. Dashboard
+2. SOS
+3. Active emergency
+4. Incident report
+5. Assistance request
+6. My incidents
+7. Incident detail
+8. Emergency contacts
+9. Profile
+10. Notifications
+11. Safety info
+12. Alerts
+13. Resources
+14. Map
+
+PHASE 3 — RESPONDER
+-------------------
+1. Dashboard
+2. Active incident queue
+3. Incident detail
+4. Accept
+5. Assignment
+6. Notes
+7. Status transitions
+8. Resolve
+9. Map
+10. History
+11. Notifications
+12. Profile
+
+PHASE 4 — ADMIN
+---------------
+1. Dashboard
+2. Analytics
+3. Incidents
+4. Incident detail
+5. Users/roles
+6. Safety CRUD
+7. Resources CRUD
+8. Alerts CRUD
+9. Map
+10. Audit
+11. Notifications
+
+PHASE 5 — EVIDENCE + SECURITY
+-----------------------------
+1. Supabase Storage
+2. Evidence upload
+3. Signed URLs
+4. Storage RLS
+5. security audit
+6. privacy pages
+
+PHASE 6 — TESTING
+-----------------
+1. lint
+2. type checking
+3. production build
+4. E2E
+5. role/RLS testing
+6. mobile testing
+7. realtime testing
+
+PHASE 7 — DEPLOY
+----------------
+1. GitHub
+2. Supabase production configuration
+3. Vercel environment variables
+4. Vercel deploy
+5. Supabase auth URLs
+6. production smoke test
+
+============================================================
+35. DEFINITION OF DONE
+============================================================
+
+The project is NOT complete until all of these are true:
+
+[ ] Root landing page works
+[ ] Login works
+[ ] Registration works
+[ ] Forgot password works
+[ ] Reset password works
+[ ] Tourist dashboard works
+[ ] SOS works with real Supabase RPC
+[ ] Location permission works
+[ ] Active emergency works
+[ ] Realtime status updates work
+[ ] Report incident works
+[ ] Assistance request works
+[ ] Incident list works
+[ ] Incident detail works
+[ ] Timeline works
+[ ] Emergency contacts CRUD works
+[ ] Safety information works
+[ ] Safety alerts work
+[ ] Emergency resources work
+[ ] Map works
+[ ] Notifications work
+[ ] Tourist profile works
+[ ] Responder dashboard works
+[ ] Responder incident queue works
+[ ] Responder accept works
+[ ] Responder assignment works
+[ ] Responder notes work
+[ ] Responder status changes work
+[ ] Responder resolve works
+[ ] Responder history works
+[ ] Admin dashboard works
+[ ] Admin analytics work
+[ ] Admin incidents work
+[ ] Admin users/roles work
+[ ] Admin safety CRUD works
+[ ] Admin resource CRUD works
+[ ] Admin alert CRUD works
+[ ] Admin map works
+[ ] Admin audit works
+[ ] Evidence upload works OR is explicitly removed from scope
+[ ] RLS/security tested
+[ ] No dead buttons
+[ ] No placeholder routes
+[ ] No "coming soon"
+[ ] No frontend service-role secret
+[ ] .env.example exists
+[ ] npm run lint passes
+[ ] npm run build passes
+[ ] production preview works
+[ ] GitHub-ready
+[ ] Vercel-ready
+[ ] Supabase auth redirect configuration documented
+[ ] Mobile layout tested
+[ ] Emergency flow tested end-to-end
+
+============================================================
+36. IMPORTANT ANTIGRAVITY INSTRUCTION
+============================================================
+
+Start by inspecting the existing codebase before changing anything.
+
+Do NOT rebuild Travel Sathi from a blank project.
+
+First:
+1. Read package.json.
+2. Read vite.config.ts.
+3. Read all existing routes.
+4. Read AppShell.
+5. Read MapView/LeafletMap.
+6. Read Notifications.
+7. Read SafetyBrowse.
+8. Read Timeline.
+9. Read lib/queries.ts.
+10. Read lib/constants.ts.
+11. Read lib/geo.ts.
+12. Read Supabase migrations.
+13. Understand all RLS policies and RPCs.
+14. Preserve the existing design system.
+15. Then implement missing routes and workflows incrementally.
+
+After each major phase:
+- run lint
+- run build
+- fix errors before continuing
+
+Never replace working functionality simply because another implementation is easier.
+
+The final goal is a REAL working application, not a clickable prototype.
+
+============================================================
+37. FINAL ACCEPTANCE TEST
+============================================================
+
+Perform this exact test before declaring completion:
+
+A. Tourist:
+- register/login
+- add emergency contact
+- open dashboard
+- view alert
+- view verified safety information
+- open resources
+- open map
+- trigger SOS
+- grant location
+- verify incident created in database
+- verify incident appears on dashboard
+- verify notification appears
+
+B. Responder:
+- login separately
+- see new SOS
+- open incident
+- accept
+- add note
+- move to en_route
+- move to assistance_provided
+- resolve
+
+C. Tourist:
+- see each status update without manual page refresh
+- see notification
+- see timeline
+- see resolved state
+
+D. Admin:
+- login
+- see incident analytics
+- inspect incident
+- manage safety information
+- manage resource
+- create safety alert
+- inspect audit history
+
+E. Security:
+- attempt cross-user access
+- verify RLS denies it
+
+F. Deployment:
+- push GitHub
+- deploy Vercel
+- configure environment variables
+- test production URL
+- verify Supabase auth redirects
+- verify maps
+- verify realtime
+- verify SOS
+
+============================================================
+END OF SPECIFICATION
+============================================================
+
+SHORT COMMAND FOR ANTIGRAVITY
+-----------------------------
+"Use this specification as the implementation contract. Inspect and preserve the
+existing Lovable/TanStack/Supabase codebase, then complete Travel Sathi phase by
+phase. Do not create a mock-only prototype. Every button, route, form, RPC,
+notification, status transition, map action, CRUD action, and role workflow must
+work against the existing Supabase backend. Preserve the existing visual design
+and make the final repository build cleanly and deploy cleanly to Vercel through
+GitHub."
