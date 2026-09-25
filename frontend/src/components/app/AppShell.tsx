@@ -1,10 +1,15 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, LogOut, ShieldAlert } from "lucide-react";
+import { Bell, CircleHelp, LogOut, ShieldAlert } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNotifications } from "@/lib/queries";
 import { cn } from "@/lib/utils";
+import {
+  OnboardingWalkthrough,
+  getWalkthroughStorageKey,
+} from "@/components/app/OnboardingWalkthrough";
 
 export type NavItem = { to: string; label: string; icon: LucideIcon; exact?: boolean };
 
@@ -27,6 +32,18 @@ export function AppShell({
   const navigate = useNavigate();
   const { data: notes } = useNotifications(userId);
   const unread = notes?.filter((n) => !n.is_read).length ?? 0;
+  const [walkthroughOpen, setWalkthroughOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const seen = localStorage.getItem(getWalkthroughStorageKey(userId, roleLabel));
+      if (!seen) {
+        setWalkthroughOpen(true);
+      }
+    } catch {
+      // Ignore localStorage access errors
+    }
+  }, [userId, roleLabel]);
 
   async function signOut() {
     await qc.cancelQueries();
@@ -47,6 +64,16 @@ export function AppShell({
             {roleLabel}
           </span>
           <div className="ml-auto flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setWalkthroughOpen(true)}
+              className="flex items-center gap-1 rounded-md px-2 py-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+              aria-label="Open quick walkthrough"
+              title="Quick Tour"
+            >
+              <CircleHelp className="h-4 w-4" />
+              <span className="hidden sm:inline">Quick Tour</span>
+            </button>
             <Link
               to={notificationsTo}
               className="relative rounded-md p-2 hover:bg-muted"
@@ -68,6 +95,12 @@ export function AppShell({
           </div>
         </div>
       </header>
+      <OnboardingWalkthrough
+        userId={userId}
+        roleLabel={roleLabel}
+        open={walkthroughOpen}
+        onOpenChange={setWalkthroughOpen}
+      />
       <div className="mx-auto flex max-w-7xl">
         <nav className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-56 shrink-0 overflow-y-auto border-r p-3 md:block">
           <ul className="space-y-0.5">
