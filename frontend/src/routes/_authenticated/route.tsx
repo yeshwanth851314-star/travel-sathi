@@ -1,14 +1,23 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchRole } from "@/lib/auth";
+import { AppShellSkeleton } from "@/components/app/states";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
+  pendingComponent: AppShellSkeleton,
   beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/login" });
-    const role = await fetchRole(data.user.id);
-    return { user: data.user, role };
+    const { data: sessionData } = await supabase.auth.getSession();
+    let user = sessionData.session?.user ?? null;
+
+    if (!user) {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) throw redirect({ to: "/login" });
+      user = data.user;
+    }
+
+    const role = await fetchRole(user.id);
+    return { user, role };
   },
   component: () => <Outlet />,
 });

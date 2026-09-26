@@ -71,7 +71,7 @@ export function SafetyInfoBrowser() {
         </label>
       </div>
       {isLoading ? (
-        <Loading />
+        <Loading variant="cards" />
       ) : error ? (
         <ErrorState error={error} />
       ) : !list.length ? (
@@ -145,7 +145,7 @@ export function ResourceDirectory({
         </label>
       </div>
       {isLoading ? (
-        <Loading />
+        <Loading variant="cards" />
       ) : error ? (
         <ErrorState error={error} />
       ) : !list.length ? (

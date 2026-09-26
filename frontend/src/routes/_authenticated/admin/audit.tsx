@@ -89,7 +89,7 @@ function AdminAuditLogsPage() {
       </div>
 
       {isLoading ? (
-        <Loading />
+        <Loading variant="table" rows={6} />
       ) : error ? (
         <ErrorState error={error} />
       ) : !filtered.length ? (

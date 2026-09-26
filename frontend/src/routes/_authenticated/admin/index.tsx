@@ -63,9 +63,6 @@ function AdminDashboard() {
     };
   }, [users, incidents, alerts, resources, safetyInfo, audits]);
 
-  if (uLoad || iLoad) return <Loading />;
-  if (uErr || iErr) return <ErrorState error={uErr ?? iErr} />;
-
   const kpis = [
     {
       label: "Active Incidents",
@@ -151,114 +148,127 @@ function AdminDashboard() {
         </div>
       </PageHeader>
 
-      {/* Clean KPI Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((k) => {
-          const Icon = k.icon;
-          return (
-            <Link
-              key={k.label}
-              to={k.to}
-              className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 shadow-2xs"
-            >
-              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-                <span>{k.label}</span>
-                <Icon className={`h-4 w-4 ${k.danger ? "text-destructive" : "text-primary"}`} />
-              </div>
-              <p
-                className={`mt-2 text-2xl font-bold font-display ${
-                  k.danger ? "text-destructive" : "text-foreground"
-                }`}
-              >
-                {k.value}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">{k.sub}</p>
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Active Incidents & Recent Audit Logs */}
-      <div className="grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-7 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-base text-foreground">Active Incidents Queue</h2>
-            <Link
-              to="/admin/incidents"
-              className="text-xs font-medium text-primary hover:underline"
-            >
-              View all →
-            </Link>
-          </div>
-          {!metrics.recentActive.length ? (
-            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
-              No active incidents requiring attention right now.
-            </div>
-          ) : (
-            <div className="divide-y rounded-xl border">
-              {metrics.recentActive.map((inc) => (
+      {uLoad || iLoad ? (
+        <Loading variant="dashboard" />
+      ) : uErr || iErr ? (
+        <ErrorState error={uErr ?? iErr} />
+      ) : (
+        <>
+          {/* Clean KPI Grid */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {kpis.map((k) => {
+              const Icon = k.icon;
+              return (
                 <Link
-                  key={inc.id}
-                  to="/admin/incidents/$incidentId"
-                  params={{ incidentId: inc.id }}
-                  className="flex items-center justify-between gap-3 p-4 hover:bg-muted/40 transition-colors"
+                  key={k.label}
+                  to={k.to}
+                  className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 shadow-2xs"
                 >
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-semibold text-muted-foreground">
-                        {inc.ref}
-                      </span>
-                      <SeverityBadge severity={inc.severity} />
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {KIND_LABEL[inc.kind]}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-foreground truncate">{inc.category}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Reporter: {inc.reporter?.full_name || inc.reporter?.email || "Tourist"} ·{" "}
-                      {inc.responder?.full_name
-                        ? `Assigned: ${inc.responder.full_name}`
-                        : "Unassigned"}
-                    </p>
+                  <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                    <span>{k.label}</span>
+                    <Icon className={`h-4 w-4 ${k.danger ? "text-destructive" : "text-primary"}`} />
                   </div>
-                  <StatusBadge status={inc.status} kind={inc.kind} />
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="lg:col-span-5 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-base text-foreground">Recent Audit Logs</h2>
-            <Link to="/admin/audit" className="text-xs font-medium text-primary hover:underline">
-              Full log →
-            </Link>
-          </div>
-          {!metrics.recentAudits.length ? (
-            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
-              No audit events recorded yet.
-            </div>
-          ) : (
-            <div className="divide-y rounded-xl border">
-              {metrics.recentAudits.map((a) => (
-                <div key={a.id} className="p-4 text-xs space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-foreground">{a.action}</span>
-                    <span className="text-muted-foreground">
-                      {format(new Date(a.created_at), "MMM d, HH:mm")}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground">
-                    Entity: <span className="font-mono">{a.entity}</span> · Actor:{" "}
-                    {a.actor?.full_name || a.actor?.email || "System"}
+                  <p
+                    className={`mt-2 text-2xl font-bold font-display ${
+                      k.danger ? "text-destructive" : "text-foreground"
+                    }`}
+                  >
+                    {k.value}
                   </p>
+                  <p className="mt-1 text-xs text-muted-foreground">{k.sub}</p>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Active Incidents & Recent Audit Logs */}
+          <div className="grid gap-6 lg:grid-cols-12">
+            <div className="lg:col-span-7 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-base text-foreground">Active Incidents Queue</h2>
+                <Link
+                  to="/admin/incidents"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  View all →
+                </Link>
+              </div>
+              {!metrics.recentActive.length ? (
+                <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
+                  No active incidents requiring attention right now.
                 </div>
-              ))}
+              ) : (
+                <div className="divide-y rounded-xl border">
+                  {metrics.recentActive.map((inc) => (
+                    <Link
+                      key={inc.id}
+                      to="/admin/incidents/$incidentId"
+                      params={{ incidentId: inc.id }}
+                      className="flex items-center justify-between gap-3 p-4 hover:bg-muted/40 transition-colors"
+                    >
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-semibold text-muted-foreground">
+                            {inc.ref}
+                          </span>
+                          <SeverityBadge severity={inc.severity} />
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {KIND_LABEL[inc.kind]}
+                          </span>
+                        </div>
+                        <p className="text-sm font-semibold text-foreground truncate">
+                          {inc.category}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Reporter: {inc.reporter?.full_name || inc.reporter?.email || "Tourist"} ·{" "}
+                          {inc.responder?.full_name
+                            ? `Assigned: ${inc.responder.full_name}`
+                            : "Unassigned"}
+                        </p>
+                      </div>
+                      <StatusBadge status={inc.status} kind={inc.kind} />
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+
+            <div className="lg:col-span-5 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-base text-foreground">Recent Audit Logs</h2>
+                <Link
+                  to="/admin/audit"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  Full log →
+                </Link>
+              </div>
+              {!metrics.recentAudits.length ? (
+                <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
+                  No audit events recorded yet.
+                </div>
+              ) : (
+                <div className="divide-y rounded-xl border">
+                  {metrics.recentAudits.map((a) => (
+                    <div key={a.id} className="p-4 text-xs space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-foreground">{a.action}</span>
+                        <span className="text-muted-foreground">
+                          {format(new Date(a.created_at), "MMM d, HH:mm")}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground">
+                        Entity: <span className="font-mono">{a.entity}</span> · Actor:{" "}
+                        {a.actor?.full_name || a.actor?.email || "System"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

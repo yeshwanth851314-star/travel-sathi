@@ -5,6 +5,7 @@ import { Bell, CircleHelp, LogOut, Moon, ShieldAlert, Sun } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { setCachedRole, clearAuthCache } from "@/lib/auth";
 import { useNotifications } from "@/lib/queries";
 import { errMsg, roleHome, type Role } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -74,7 +75,7 @@ export function AppShell({
     try {
       const { error } = await supabase.rpc("switch_my_role", { _role: nextRole });
       if (error) throw error;
-      await qc.invalidateQueries();
+      setCachedRole(userId, nextRole);
       toast.success(
         `Switched to ${nextRole === "admin" ? "Administrator" : nextRole === "responder" ? "Responder" : "Tourist"} dashboard`,
       );
@@ -87,6 +88,7 @@ export function AppShell({
   }
 
   async function signOut() {
+    clearAuthCache();
     await qc.cancelQueries();
     qc.clear();
     await supabase.auth.signOut();

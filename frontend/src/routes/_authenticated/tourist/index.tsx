@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useIncidents,
   useAlerts,
@@ -51,12 +52,12 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
 
 function TouristDashboard() {
   const { user } = Route.useRouteContext();
-  const { data: profile } = useProfile(user.id);
-  const { data: incidents } = useIncidents({ reporterId: user.id });
-  const { data: alerts } = useAlerts(false);
-  const { data: announcements } = useSafetyInfo();
-  const { data: contacts } = useEmergencyContacts(user.id);
-  const { data: resources } = useResources();
+  const { data: profile, isLoading: profileLoading } = useProfile(user.id);
+  const { data: incidents, isLoading: incidentsLoading } = useIncidents({ reporterId: user.id });
+  const { data: alerts, isLoading: alertsLoading } = useAlerts(false);
+  const { data: announcements, isLoading: announcementsLoading } = useSafetyInfo();
+  const { data: contacts, isLoading: contactsLoading } = useEmergencyContacts(user.id);
+  const { data: resources, isLoading: resourcesLoading } = useResources();
 
   const [coords, setCoords] = useState<{
     latitude: number;
@@ -66,10 +67,10 @@ function TouristDashboard() {
   const [locLoading, setLocLoading] = useState(false);
   const [locError, setLocError] = useState<string | null>(null);
 
-  async function detectLocation() {
+  async function detectLocation(force = false) {
     setLocLoading(true);
     setLocError(null);
-    const res = await getLocation(8000);
+    const res = await getLocation(5000, force);
     setLocLoading(false);
     if (res.ok) {
       setCoords({
@@ -83,7 +84,7 @@ function TouristDashboard() {
   }
 
   useEffect(() => {
-    void detectLocation();
+    void detectLocation(false);
   }, []);
 
   const activeIncidents = (incidents ?? []).filter(
@@ -111,8 +112,13 @@ function TouristDashboard() {
       {/* 1. Welcome Message & 2. Current Location */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-6">
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground">
-            Welcome to Travel Sathi, {displayName}
+          <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground flex items-center gap-2 flex-wrap">
+            <span>Welcome to Travel Sathi,</span>
+            {profileLoading && !profile ? (
+              <Skeleton className="h-8 w-32 inline-block" />
+            ) : (
+              <span>{displayName}</span>
+            )}
           </h1>
           <p className="text-sm text-muted-foreground">
             Your personal travel safety hub — emergency assistance, local alerts, and verified
@@ -135,7 +141,7 @@ function TouristDashboard() {
                 </span>
               </p>
             ) : locLoading ? (
-              <p className="text-xs text-muted-foreground">Detecting location…</p>
+              <Skeleton className="h-4 w-40 mt-1" />
             ) : (
               <p className="text-xs text-muted-foreground line-clamp-1">
                 {locError ?? "Location unavailable"}
@@ -146,7 +152,7 @@ function TouristDashboard() {
             type="button"
             variant="ghost"
             size="sm"
-            onClick={detectLocation}
+            onClick={() => detectLocation(true)}
             disabled={locLoading}
             className="shrink-0 h-8 px-2.5 text-xs"
           >
@@ -227,7 +233,20 @@ function TouristDashboard() {
             </Link>
           </div>
 
-          {!alerts?.length ? (
+          {alertsLoading ? (
+            <div className="space-y-2.5">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-5 w-16 rounded-md" />
+                  </div>
+                  <Skeleton className="h-3.5 w-full" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+              ))}
+            </div>
+          ) : !alerts?.length ? (
             <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
               No active safety alerts in your area.
             </div>
@@ -262,7 +281,19 @@ function TouristDashboard() {
             </Link>
           </div>
 
-          {!announcements?.length ? (
+          {announcementsLoading ? (
+            <div className="space-y-2.5">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="rounded-xl border p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-4 w-44" />
+                    <Skeleton className="h-4 w-16 rounded" />
+                  </div>
+                  <Skeleton className="h-3.5 w-4/5" />
+                </div>
+              ))}
+            </div>
+          ) : !announcements?.length ? (
             <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
               No recent announcements published yet.
             </div>
@@ -308,15 +339,23 @@ function TouristDashboard() {
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="rounded-xl border bg-muted/30 p-3">
               <span className="text-muted-foreground block">Verified Locations</span>
-              <span className="text-lg font-bold text-foreground mt-0.5 block">
-                {(resources ?? []).length}
-              </span>
+              {resourcesLoading ? (
+                <Skeleton className="h-6 w-10 mt-1" />
+              ) : (
+                <span className="text-lg font-bold text-foreground mt-0.5 block">
+                  {(resources ?? []).length}
+                </span>
+              )}
             </div>
             <div className="rounded-xl border bg-muted/30 p-3">
               <span className="text-muted-foreground block">Active Alerts</span>
-              <span className="text-lg font-bold text-foreground mt-0.5 block">
-                {(alerts ?? []).length}
-              </span>
+              {alertsLoading ? (
+                <Skeleton className="h-6 w-10 mt-1" />
+              ) : (
+                <span className="text-lg font-bold text-foreground mt-0.5 block">
+                  {(alerts ?? []).length}
+                </span>
+              )}
             </div>
           </div>
 
@@ -343,7 +382,19 @@ function TouristDashboard() {
             </Button>
           </div>
 
-          {!contacts?.length ? (
+          {contactsLoading ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="rounded-xl border p-3.5 flex items-center justify-between">
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-3 w-36" />
+                  </div>
+                  <Skeleton className="h-7 w-14 rounded-lg" />
+                </div>
+              ))}
+            </div>
+          ) : !contacts?.length ? (
             <div className="rounded-xl border border-dashed p-8 text-center space-y-2">
               <p className="text-sm font-medium text-foreground">No emergency contacts saved</p>
               <p className="text-xs text-muted-foreground max-w-md mx-auto">
@@ -417,7 +468,23 @@ function TouristDashboard() {
             </div>
           </div>
 
-          {!incidents?.length ? (
+          {incidentsLoading ? (
+            <div className="space-y-2.5">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-xl border p-3.5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-14" />
+                    </div>
+                    <Skeleton className="h-5 w-20" />
+                  </div>
+                  <Skeleton className="h-4 w-48" />
+                  <Skeleton className="h-3 w-36" />
+                </div>
+              ))}
+            </div>
+          ) : !incidents?.length ? (
             <div className="rounded-xl border border-dashed bg-muted/20 p-8 text-center space-y-2">
               <ShieldCheck className="mx-auto h-8 w-8 text-muted-foreground/60" />
               <p className="text-sm font-medium text-foreground">No active or recent reports</p>
@@ -496,47 +563,62 @@ function TouristDashboard() {
             </Link>
           </div>
 
-          <div className="space-y-2.5">
-            {sortedResources.slice(0, 4).map((r) => {
-              const distKm =
-                coords && r.latitude != null && r.longitude != null
-                  ? haversineKm(coords.latitude, coords.longitude, r.latitude, r.longitude)
-                  : null;
-              return (
-                <div
-                  key={r.id}
-                  className="rounded-xl border bg-muted/20 p-3.5 flex items-center justify-between gap-3 text-xs"
-                >
-                  <div className="space-y-0.5 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-foreground truncate">{r.name}</span>
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
-                        {r.type}
-                      </Badge>
-                    </div>
-                    <span className="text-muted-foreground block line-clamp-1">{r.address}</span>
-                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground/80">
-                      {r.operating_hours && <span>🕒 {r.operating_hours}</span>}
-                      {distKm !== null && (
-                        <span className="font-medium text-primary">
-                          · {distKm.toFixed(1)} km away
-                        </span>
-                      )}
-                    </div>
+          {resourcesLoading ? (
+            <div className="space-y-2.5">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="rounded-xl border p-3.5 flex items-center justify-between">
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-3 w-48" />
+                    <Skeleton className="h-3 w-28" />
                   </div>
-                  {r.phone && (
-                    <a
-                      href={`tel:${r.phone}`}
-                      className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 font-semibold text-primary hover:bg-primary/20 transition-colors"
-                    >
-                      <Phone className="h-3 w-3" />
-                      Call
-                    </a>
-                  )}
+                  <Skeleton className="h-7 w-14 rounded-lg" />
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {sortedResources.slice(0, 4).map((r) => {
+                const distKm =
+                  coords && r.latitude != null && r.longitude != null
+                    ? haversineKm(coords.latitude, coords.longitude, r.latitude, r.longitude)
+                    : null;
+                return (
+                  <div
+                    key={r.id}
+                    className="rounded-xl border bg-muted/20 p-3.5 flex items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-foreground truncate">{r.name}</span>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 shrink-0">
+                          {r.type}
+                        </Badge>
+                      </div>
+                      <span className="text-muted-foreground block line-clamp-1">{r.address}</span>
+                      <div className="flex items-center gap-2 text-[11px] text-muted-foreground/80">
+                        {r.operating_hours && <span>{r.operating_hours}</span>}
+                        {distKm !== null && (
+                          <span className="font-medium text-primary">
+                            · {distKm.toFixed(1)} km away
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {r.phone && (
+                      <a
+                        href={`tel:${r.phone}`}
+                        className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1.5 font-semibold text-primary hover:bg-primary/20 transition-colors"
+                      >
+                        <Phone className="h-3 w-3" />
+                        Call
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

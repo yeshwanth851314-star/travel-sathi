@@ -1,26 +1,56 @@
 import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-/** Subscribe to realtime changes on a table and invalidate the given query keys. */
+type SharedSub = {
+  channel: ReturnType<typeof supabase.channel>;
+  listeners: Set<() => void>;
+};
+
+const sharedChannels = new Map<string, SharedSub>();
+
+/** Subscribe to realtime changes on a table and invalidate the given query keys (deduplicated per table+filter). */
 export function useRealtimeInvalidate(table: string, keys: string[][], filter?: string) {
-  const qc = useQueryClient();
+  const qc: QueryClient = useQueryClient();
+  const channelKey = `${table}:${filter ?? "*"}`;
   const sig = JSON.stringify(keys) + (filter ?? "");
+
   useEffect(() => {
-    const channel = supabase
-      .channel(`rt-${table}-${Math.random().toString(36).slice(2)}`)
-      .on(
-        "postgres_changes" as never,
-        { event: "*", schema: "public", table, ...(filter ? { filter } : {}) },
-        () => keys.forEach((k) => qc.invalidateQueries({ queryKey: k })),
-      )
-      .subscribe();
+    const onChange = () => {
+      keys.forEach((k) => qc.invalidateQueries({ queryKey: k }));
+    };
+
+    let entry = sharedChannels.get(channelKey);
+    if (!entry) {
+      const listeners = new Set<() => void>();
+      const channel = supabase
+        .channel(`rt-shared-${channelKey}`)
+        .on(
+          "postgres_changes" as never,
+          { event: "*", schema: "public", table, ...(filter ? { filter } : {}) },
+          () => {
+            listeners.forEach((fn) => fn());
+          },
+        )
+        .subscribe();
+      entry = { channel, listeners };
+      sharedChannels.set(channelKey, entry);
+    }
+
+    entry.listeners.add(onChange);
+
     return () => {
-      supabase.removeChannel(channel);
+      const current = sharedChannels.get(channelKey);
+      if (!current) return;
+      current.listeners.delete(onChange);
+      if (current.listeners.size === 0) {
+        sharedChannels.delete(channelKey);
+        void supabase.removeChannel(current.channel);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table, sig]);
+  }, [channelKey, sig]);
 }
 
 const INCIDENT_SELECT =

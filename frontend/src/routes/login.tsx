@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { clearAuthCache, setCachedRole } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,12 +79,14 @@ function Login() {
     e.preventDefault();
     setBusy(true);
     setMsg(null);
+    clearAuthCache();
     try {
       if (mode === "in") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         if (selectedRole !== "auto") {
           await supabase.rpc("switch_my_role", { _role: selectedRole });
+          if (data.user) setCachedRole(data.user.id, selectedRole);
           toast.success(`Signed in as ${selectedRole.toUpperCase()}!`);
           navigate({ to: roleHome(selectedRole) });
         } else {
@@ -102,6 +105,7 @@ function Login() {
         if (error) throw error;
         if (data.session) {
           await supabase.rpc("switch_my_role", { _role: signupRole });
+          if (data.user) setCachedRole(data.user.id, signupRole);
           toast.success(`Welcome to Travel Sathi! Signed in as ${signupRole}.`);
           navigate({ to: roleHome(signupRole) });
           return;
@@ -124,13 +128,15 @@ function Login() {
   async function quickDemoLogin(role: Role, demoEmail: string) {
     setBusy(true);
     setMsg(null);
+    clearAuthCache();
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: demoEmail,
         password: "TravelSathi2026!",
       });
       if (error) throw error;
       await supabase.rpc("switch_my_role", { _role: role });
+      if (data.user) setCachedRole(data.user.id, role);
       toast.success(`Signed into ${role.toUpperCase()} portal!`);
       navigate({ to: roleHome(role) });
     } catch (err) {

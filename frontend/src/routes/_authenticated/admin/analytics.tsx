@@ -83,9 +83,6 @@ function AdminAnalyticsPage() {
     };
   }, [users, incidents]);
 
-  if (uLoad || iLoad) return <Loading />;
-  if (uErr || iErr) return <ErrorState error={uErr ?? iErr} />;
-
   return (
     <div className="space-y-6">
       <PageHeader
@@ -93,134 +90,142 @@ function AdminAnalyticsPage() {
         desc="Visual breakdown of incident volume, severity distribution, lifecycle progression, and category trends."
       />
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border bg-card p-4 shadow-2xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Total Incidents Logged</span>
-            <BarChart3 className="h-4 w-4 text-primary" />
-          </div>
-          <p className="mt-2 text-2xl font-bold">{analytics.totalIncidents}</p>
-        </div>
-
-        <div className="rounded-xl border bg-card p-4 shadow-2xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Currently Active</span>
-            <Siren className="h-4 w-4 text-destructive" />
-          </div>
-          <p className="mt-2 text-2xl font-bold">{analytics.activeCount}</p>
-        </div>
-
-        <div className="rounded-xl border bg-card p-4 shadow-2xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Resolution Rate</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-          </div>
-          <p className="mt-2 text-2xl font-bold">{analytics.resolutionRate}%</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {analytics.resolvedCount} resolved cases
-          </p>
-        </div>
-
-        <div className="rounded-xl border bg-card p-4 shadow-2xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Registered Accounts</span>
-            <Users className="h-4 w-4 text-primary" />
-          </div>
-          <p className="mt-2 text-2xl font-bold">{analytics.totalUsers}</p>
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-          <h2 className="font-semibold text-sm flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
-            Incidents by Type (SOS vs Report vs Assistance)
-          </h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.byKind}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
-                <XAxis dataKey="name" fontSize={12} />
-                <YAxis allowDecimals={false} fontSize={12} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#2563eb" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-          <h2 className="font-semibold text-sm">Incidents by Severity</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={analytics.bySeverity}
-                  dataKey="count"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={85}
-                  label={({ name, count }) => `${name}: ${count}`}
-                >
-                  {analytics.bySeverity.map((_, idx) => (
-                    <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-          <h2 className="font-semibold text-sm">Incidents by Lifecycle Status</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.byStatus} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
-                <XAxis type="number" allowDecimals={false} fontSize={12} />
-                <YAxis type="category" dataKey="name" width={120} fontSize={11} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#0d9488" radius={[0, 6, 6, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-          <h2 className="font-semibold text-sm">Incidents Reported (Last 7 Days)</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.last7Days}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
-                <XAxis dataKey="date" fontSize={12} />
-                <YAxis allowDecimals={false} fontSize={12} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#ea580c" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {analytics.topCategories.length > 0 && (
-        <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-          <h2 className="font-semibold text-sm">Top Reported Categories</h2>
-          <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
-            {analytics.topCategories.map((c) => (
-              <div
-                key={c.name}
-                className="flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm"
-              >
-                <span className="truncate font-medium">{c.name}</span>
-                <span className="ml-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
-                  {c.count}
-                </span>
+      {uLoad || iLoad ? (
+        <Loading variant="dashboard" />
+      ) : uErr || iErr ? (
+        <ErrorState error={uErr ?? iErr} />
+      ) : (
+        <>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-xl border bg-card p-4 shadow-2xs">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Total Incidents Logged</span>
+                <BarChart3 className="h-4 w-4 text-primary" />
               </div>
-            ))}
+              <p className="mt-2 text-2xl font-bold">{analytics.totalIncidents}</p>
+            </div>
+
+            <div className="rounded-xl border bg-card p-4 shadow-2xs">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Currently Active</span>
+                <Siren className="h-4 w-4 text-destructive" />
+              </div>
+              <p className="mt-2 text-2xl font-bold">{analytics.activeCount}</p>
+            </div>
+
+            <div className="rounded-xl border bg-card p-4 shadow-2xs">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Resolution Rate</span>
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              </div>
+              <p className="mt-2 text-2xl font-bold">{analytics.resolutionRate}%</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {analytics.resolvedCount} resolved cases
+              </p>
+            </div>
+
+            <div className="rounded-xl border bg-card p-4 shadow-2xs">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Registered Accounts</span>
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <p className="mt-2 text-2xl font-bold">{analytics.totalUsers}</p>
+            </div>
           </div>
-        </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
+              <h2 className="font-semibold text-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                Incidents by Type (SOS vs Report vs Assistance)
+              </h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={analytics.byKind}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
+                    <XAxis dataKey="name" fontSize={12} />
+                    <YAxis allowDecimals={false} fontSize={12} />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#2563eb" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
+              <h2 className="font-semibold text-sm">Incidents by Severity</h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={analytics.bySeverity}
+                      dataKey="count"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={85}
+                      label={({ name, count }) => `${name}: ${count}`}
+                    >
+                      {analytics.bySeverity.map((_, idx) => (
+                        <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
+              <h2 className="font-semibold text-sm">Incidents by Lifecycle Status</h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={analytics.byStatus} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
+                    <XAxis type="number" allowDecimals={false} fontSize={12} />
+                    <YAxis type="category" dataKey="name" width={120} fontSize={11} />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#0d9488" radius={[0, 6, 6, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
+              <h2 className="font-semibold text-sm">Incidents Reported (Last 7 Days)</h2>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={analytics.last7Days}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.25} />
+                    <XAxis dataKey="date" fontSize={12} />
+                    <YAxis allowDecimals={false} fontSize={12} />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#ea580c" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {analytics.topCategories.length > 0 && (
+            <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
+              <h2 className="font-semibold text-sm">Top Reported Categories</h2>
+              <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+                {analytics.topCategories.map((c) => (
+                  <div
+                    key={c.name}
+                    className="flex items-center justify-between rounded-lg border px-3.5 py-2.5 text-sm"
+                  >
+                    <span className="truncate font-medium">{c.name}</span>
+                    <span className="ml-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+                      {c.count}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
