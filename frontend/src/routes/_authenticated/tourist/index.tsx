@@ -109,45 +109,46 @@ function TouristDashboard() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-10">
       {/* 1. Welcome Message & 2. 📍 Current Location */}
-      <div className="rounded-2xl border bg-card p-5 sm:p-6 shadow-2xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+      <div className="rounded-2xl border tactical-card p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-500 border border-emerald-500/35 glow-emerald">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
             <ShieldCheck className="h-3.5 w-3.5" />
-            Safety Shield Active
+            VERIFIED SAFE PASS · SHIELD ACTIVE
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-foreground">
             Welcome to Travel Sathi, {displayName}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Your personal travel safety companion — emergency dispatch, live alerts, and verified
-            resources in one place.
+            Your personal tactical travel safety companion — 1-tap SOS dispatch, live alerts, and
+            verified emergency resources.
           </p>
         </div>
 
         {/* 📍 Current Location Card */}
-        <div className="rounded-xl border bg-muted/40 p-3.5 sm:min-w-72 flex items-center justify-between gap-3">
+        <div className="rounded-xl border border-primary/30 bg-background/70 backdrop-blur-md p-3.5 sm:min-w-80 flex items-center justify-between gap-3 glow-cyan">
           <div className="flex items-start gap-2.5 min-w-0">
-            <div className="rounded-lg bg-primary/10 p-2 text-primary shrink-0 mt-0.5">
+            <div className="rounded-lg bg-primary/15 border border-primary/30 p-2 text-primary shrink-0 mt-0.5">
               <MapPin className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                📍 Current Location
+              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
+                📍 Current Location · GNSS
               </p>
               {coords ? (
                 <>
-                  <p className="text-xs font-mono font-semibold text-foreground truncate">
+                  <p className="text-xs font-mono font-bold text-foreground truncate mt-0.5">
                     {coords.latitude.toFixed(4)}° N, {coords.longitude.toFixed(4)}° E
                   </p>
-                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400">
-                    GPS locked (±{Math.round(coords.accuracy)}m)
+                  <p className="font-mono text-[10px] font-semibold text-emerald-500">
+                    ● SATELLITE LOCK (±{Math.round(coords.accuracy)}m)
                   </p>
                 </>
               ) : locLoading ? (
-                <p className="text-xs text-muted-foreground">Detecting GPS coordinates…</p>
+                <p className="text-xs font-mono text-muted-foreground">Acquiring GNSS lock…</p>
               ) : (
                 <p className="text-xs text-muted-foreground line-clamp-1">
-                  {locError ?? "Tap refresh to share GPS"}
+                  {locError ?? "Tap refresh to lock GPS"}
                 </p>
               )}
             </div>
@@ -158,30 +159,32 @@ function TouristDashboard() {
             size="sm"
             onClick={detectLocation}
             disabled={locLoading}
-            className="shrink-0 h-8 px-2.5 text-xs"
+            className="shrink-0 h-8 px-2.5 text-xs font-mono"
           >
-            <LocateFixed className="h-3.5 w-3.5 mr-1" />
-            {locLoading ? "…" : "Refresh"}
+            <LocateFixed className="h-3.5 w-3.5 mr-1 text-primary" />
+            {locLoading ? "…" : "Sync"}
           </Button>
         </div>
       </div>
 
       {/* 3. 🚨 SOS Button — Very Prominent */}
       {activeSos ? (
-        <div className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-pulse">
+        <div className="rounded-2xl border-2 border-destructive bg-destructive/15 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 glow-crimson">
           <div className="flex items-center gap-4">
-            <div className="rounded-full bg-destructive p-3 text-destructive-foreground shadow-md">
+            <div className="rounded-2xl bg-destructive p-3.5 text-destructive-foreground shadow-lg">
               <Siren className="h-7 w-7 animate-bounce" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-destructive text-sm uppercase tracking-wide">
-                  🚨 Active Emergency SOS
+                <span className="font-mono font-bold text-destructive text-xs uppercase tracking-widest">
+                  🚨 ACTIVE DISTRESS BEACON
                 </span>
-                <span className="text-xs text-muted-foreground font-mono">({activeSos.ref})</span>
+                <span className="rounded bg-destructive/20 px-2 py-0.5 text-xs text-destructive font-mono font-bold">
+                  {activeSos.ref}
+                </span>
               </div>
-              <p className="text-sm font-medium text-foreground mt-0.5">
-                Current Status: <StatusBadge status={activeSos.status} kind="sos" />
+              <p className="text-sm font-medium text-foreground mt-1 flex items-center gap-2">
+                Live Dispatch Status: <StatusBadge status={activeSos.status} kind="sos" />
               </p>
             </div>
           </div>
@@ -189,34 +192,35 @@ function TouristDashboard() {
             <Button
               variant="destructive"
               size="lg"
-              className="font-bold shadow-md w-full sm:w-auto"
+              className="font-bold shadow-lg w-full sm:w-auto"
             >
-              View Live Emergency Response <ChevronRight className="ml-1 h-4 w-4" />
+              Open Live Emergency Tracker <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-destructive/40 bg-gradient-to-br from-destructive/15 via-destructive/5 to-card p-6 sm:p-8 shadow-md">
+        <div className="relative overflow-hidden rounded-2xl border border-destructive/50 bg-gradient-to-br from-destructive/20 via-card to-card p-6 sm:p-8 glow-crimson">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1 text-xs font-bold uppercase tracking-wider text-destructive-foreground shadow-xs">
-                🚨 Emergency SOS
+            <div className="space-y-2.5 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 rounded-full bg-destructive px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-destructive-foreground shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-white animate-ping" />
+                🚨 ONE-TAP DISTRESS BEACON
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold font-display text-foreground">
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-foreground">
                 In Immediate Danger? Trigger Emergency SOS
               </h2>
-              <p className="text-sm text-muted-foreground max-w-xl">
-                Broadcasts your live GPS coordinates, alerts nearby emergency responders, and opens
-                a priority rescue channel immediately.
+              <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                Transmits your live GPS coordinates, alerts your primary emergency contacts, and
+                dispatches the nearest verified ambulance &amp; police responder unit immediately.
               </p>
             </div>
             <Link to="/tourist/sos" className="w-full md:w-auto shrink-0">
               <Button
                 variant="destructive"
                 size="lg"
-                className="w-full md:w-auto h-16 px-10 text-lg font-extrabold tracking-wide shadow-xl hover:scale-105 transition-transform"
+                className="w-full md:w-auto h-16 px-10 text-lg font-extrabold tracking-wider shadow-xl glow-crimson hover:scale-105 transition-transform"
               >
-                <Siren className="mr-2.5 h-7 w-7" />
+                <Siren className="mr-2.5 h-7 w-7 animate-pulse" />
                 TRIGGER SOS NOW
               </Button>
             </Link>

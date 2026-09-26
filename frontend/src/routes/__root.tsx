@@ -111,7 +111,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap",
       },
       {
         rel: "stylesheet",
@@ -137,11 +137,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-tactical-grid">
         {children}
         <Scripts />
       </body>
@@ -154,6 +154,17 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem("travel_sathi_theme");
+      if (savedTheme === "light") {
+        document.documentElement.classList.remove("dark");
+      } else {
+        document.documentElement.classList.add("dark");
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(() => {

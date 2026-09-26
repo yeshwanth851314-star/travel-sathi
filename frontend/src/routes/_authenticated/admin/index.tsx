@@ -165,22 +165,30 @@ function AdminDashboard() {
       </PageHeader>
 
       {/* KPI Cards */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => {
           const Icon = k.icon;
           return (
             <Link
               key={k.label}
               to={k.to}
-              className={`rounded-xl border p-4 transition-colors hover:border-primary/50 shadow-2xs ${
-                k.danger ? "border-destructive/30 bg-destructive/5" : "bg-card"
+              className={`rounded-xl border border-l-4 p-4 transition-all hover:border-primary/60 ${
+                k.danger
+                  ? "border-l-destructive border-destructive/40 bg-destructive/10 glow-crimson"
+                  : "border-l-primary tactical-card"
               }`}
             >
-              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+              <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                 <span>{k.label}</span>
-                <Icon className={`h-4 w-4 ${k.danger ? "text-destructive" : "text-primary"}`} />
+                <Icon
+                  className={`h-4 w-4 ${k.danger ? "text-destructive animate-pulse" : "text-primary"}`}
+                />
               </div>
-              <p className={`mt-2 text-2xl font-bold ${k.danger ? "text-destructive" : ""}`}>
+              <p
+                className={`mt-2 text-2xl font-extrabold font-mono ${
+                  k.danger ? "text-destructive" : "text-foreground"
+                }`}
+              >
                 {k.value}
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">{k.sub}</p>
@@ -190,17 +198,22 @@ function AdminDashboard() {
       </div>
 
       {/* Quick Module Directory */}
-      <div className="rounded-xl border bg-card p-5 space-y-3 shadow-2xs">
-        <h2 className="text-sm font-semibold text-foreground">Administrator Modules</h2>
+      <div className="rounded-2xl border tactical-card p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-display font-bold uppercase tracking-wider text-foreground">
+            Administrator Tactical Modules
+          </h2>
+          <span className="font-mono text-[10px] text-primary uppercase">10 Active Consoles</span>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
           {moduleShortcuts.map((m) => (
             <Link
               key={m.to}
               to={m.to}
-              className="flex items-center justify-between rounded-lg border bg-muted/20 px-3 py-2.5 text-xs font-medium hover:border-primary/40 hover:bg-muted/50 transition-colors"
+              className="flex items-center justify-between rounded-xl border bg-background/60 px-3 py-2.5 text-xs font-semibold hover:border-primary/50 hover:bg-primary/10 transition-all"
             >
               <span className="truncate">{m.label}</span>
-              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-1" />
+              <ArrowRight className="h-3.5 w-3.5 text-primary shrink-0 ml-1" />
             </Link>
           ))}
         </div>
@@ -208,9 +221,9 @@ function AdminDashboard() {
 
       {/* Active Incidents & Recent Audit Logs */}
       <div className="grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-7 rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        <div className="lg:col-span-7 rounded-2xl border tactical-card p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-base">Active Incidents Queue</h2>
+            <h2 className="font-display font-bold text-base">Active Incidents Queue</h2>
             <Link
               to="/admin/incidents"
               className="text-xs font-medium text-primary hover:underline"
@@ -219,23 +232,23 @@ function AdminDashboard() {
             </Link>
           </div>
           {!metrics.recentActive.length ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-6 text-center text-xs text-muted-foreground">
               No active incidents requiring attention right now.
             </div>
           ) : (
-            <div className="divide-y rounded-lg border">
+            <div className="divide-y rounded-xl border bg-background/40 overflow-hidden">
               {metrics.recentActive.map((inc) => (
                 <Link
                   key={inc.id}
                   to="/admin/incidents/$incidentId"
                   params={{ incidentId: inc.id }}
-                  className="flex items-center justify-between gap-3 p-3 hover:bg-muted/40 transition-colors"
+                  className="flex items-center justify-between gap-3 p-3.5 hover:bg-muted/40 transition-colors"
                 >
                   <div className="min-w-0 space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold">{inc.ref}</span>
+                      <span className="font-mono text-xs font-bold text-primary">{inc.ref}</span>
                       <SeverityBadge severity={inc.severity} />
-                      <span className="text-xs font-medium text-muted-foreground">
+                      <span className="font-mono text-[10px] font-semibold uppercase text-muted-foreground">
                         {KIND_LABEL[inc.kind]}
                       </span>
                     </div>
@@ -254,29 +267,31 @@ function AdminDashboard() {
           )}
         </div>
 
-        <div className="lg:col-span-5 rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        <div className="lg:col-span-5 rounded-2xl border tactical-card p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-base">Recent Audit Logs</h2>
+            <h2 className="font-display font-bold text-base">Recent Audit Logs</h2>
             <Link to="/admin/audit" className="text-xs font-medium text-primary hover:underline">
               Full audit log →
             </Link>
           </div>
           {!metrics.recentAudits.length ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-6 text-center text-xs text-muted-foreground">
               No audit events recorded yet.
             </div>
           ) : (
-            <div className="divide-y rounded-lg border">
+            <div className="divide-y rounded-xl border bg-background/40 overflow-hidden">
               {metrics.recentAudits.map((a) => (
-                <div key={a.id} className="p-3 text-xs space-y-0.5">
+                <div key={a.id} className="p-3.5 text-xs space-y-0.5">
                   <div className="flex items-center justify-between">
-                    <span className="font-semibold uppercase text-foreground">{a.action}</span>
-                    <span className="text-muted-foreground">
+                    <span className="font-mono font-bold uppercase text-foreground">
+                      {a.action}
+                    </span>
+                    <span className="font-mono text-[11px] text-muted-foreground">
                       {format(new Date(a.created_at), "MMM d, HH:mm")}
                     </span>
                   </div>
                   <p className="text-muted-foreground">
-                    Entity: <span className="font-mono">{a.entity}</span> · Actor:{" "}
+                    Entity: <span className="font-mono text-primary">{a.entity}</span> · Actor:{" "}
                     {a.actor?.full_name || a.actor?.email || "System"}
                   </p>
                 </div>

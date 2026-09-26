@@ -143,37 +143,41 @@ function Login() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background bg-tactical-grid px-4 py-10">
       <div className="w-full max-w-md space-y-5">
         <div className="flex items-center justify-between">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-lg border bg-card/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground backdrop-blur transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to Command Home
           </Link>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            GRID ONLINE
+          </span>
         </div>
 
         <div className="text-center space-y-1.5">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-1 shadow-xs">
-            <ShieldAlert className="h-7 w-7 text-primary" />
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-destructive/35 bg-destructive/15 text-2xl mb-1 shadow-md glow-crimson">
+            🚑
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground font-display">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-display">
             Travel Sathi
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Smart Tourist Safety & Emergency Response Platform
+          <p className="text-xs font-mono uppercase tracking-widest text-primary">
+            Smart Tourist Safety &amp; Emergency Response Grid
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-card p-6 shadow-xs sm:p-7">
-          <div className="flex rounded-lg bg-muted p-1 mb-5 text-sm font-medium">
+        <div className="rounded-2xl border tactical-card p-6 sm:p-7">
+          <div className="flex rounded-xl border bg-muted/60 p-1 mb-5 text-sm font-medium">
             <button
               type="button"
-              className={`flex-1 rounded-md py-1.5 transition-colors ${
+              className={`flex-1 rounded-lg py-1.5 transition-all ${
                 mode === "in"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-xs font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => {
@@ -185,9 +189,9 @@ function Login() {
             </button>
             <button
               type="button"
-              className={`flex-1 rounded-md py-1.5 transition-colors ${
+              className={`flex-1 rounded-lg py-1.5 transition-all ${
                 mode === "up"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-primary-foreground shadow-xs font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => {

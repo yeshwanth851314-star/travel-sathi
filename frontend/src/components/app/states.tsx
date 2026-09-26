@@ -14,10 +14,12 @@ export function Loading({ label = "Loading…" }: { label?: string }) {
 
 export function Empty({ title, hint }: { title: string; hint?: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed py-8 px-4 text-center">
-      <Inbox className="h-5 w-5 text-muted-foreground" />
-      <p className="text-sm font-medium">{title}</p>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    <div className="flex flex-col items-center gap-1.5 rounded-xl border border-dashed bg-muted/20 py-10 px-4 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+        <Inbox className="h-5 w-5" />
+      </div>
+      <p className="text-sm font-semibold text-foreground">{title}</p>
+      {hint && <p className="text-xs text-muted-foreground max-w-sm">{hint}</p>}
     </div>
   );
 }
@@ -25,7 +27,7 @@ export function Empty({ title, hint }: { title: string; hint?: string }) {
 export function ErrorState({ error }: { error: unknown }) {
   return (
     <div
-      className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive"
+      className="flex items-start gap-2.5 rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"
       role="alert"
     >
       <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
@@ -44,10 +46,16 @@ export function PageHeader({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        {desc && <p className="text-sm text-muted-foreground">{desc}</p>}
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-4 rounded-2xl border bg-card/80 backdrop-blur-md p-5 shadow-2xs">
+      <div className="space-y-1">
+        <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          LIVE COMMAND GRID
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground">
+          {title}
+        </h1>
+        {desc && <p className="text-sm text-muted-foreground max-w-2xl">{desc}</p>}
       </div>
       {children}
     </div>
