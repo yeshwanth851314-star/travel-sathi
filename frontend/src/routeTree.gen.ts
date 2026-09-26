@@ -24,9 +24,11 @@ import { Route as PublicResourcesRouteImport } from './routes/public/resources'
 import { Route as PublicSafetyRouteImport } from './routes/public/safety'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminAlertsRouteImport } from './routes/_authenticated/admin/alerts'
+import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin/analytics'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin/audit'
 import { Route as AuthenticatedAdminMapRouteImport } from './routes/_authenticated/admin/map'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin/profile'
 import { Route as AuthenticatedAdminResourcesRouteImport } from './routes/_authenticated/admin/resources'
 import { Route as AuthenticatedAdminSafetyRouteImport } from './routes/_authenticated/admin/safety'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
@@ -130,6 +132,12 @@ const AuthenticatedAdminAlertsRoute =
     path: '/alerts',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAnalyticsRoute =
+  AuthenticatedAdminAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
   id: '/audit',
   path: '/audit',
@@ -144,6 +152,12 @@ const AuthenticatedAdminNotificationsRoute =
   AuthenticatedAdminNotificationsRouteImport.update({
     id: '/notifications',
     path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminProfileRoute =
+  AuthenticatedAdminProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminResourcesRoute =
@@ -320,9 +334,11 @@ export interface FileRoutesByFullPath {
   '/public/resources': typeof PublicResourcesRoute
   '/public/safety': typeof PublicSafetyRoute
   '/admin/alerts': typeof AuthenticatedAdminAlertsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/map': typeof AuthenticatedAdminMapRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/admin/safety': typeof AuthenticatedAdminSafetyRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -363,9 +379,11 @@ export interface FileRoutesByTo {
   '/public/resources': typeof PublicResourcesRoute
   '/public/safety': typeof PublicSafetyRoute
   '/admin/alerts': typeof AuthenticatedAdminAlertsRoute
+  '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/map': typeof AuthenticatedAdminMapRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/admin/safety': typeof AuthenticatedAdminSafetyRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -411,9 +429,11 @@ export interface FileRoutesById {
   '/public/resources': typeof PublicResourcesRoute
   '/public/safety': typeof PublicSafetyRoute
   '/_authenticated/admin/alerts': typeof AuthenticatedAdminAlertsRoute
+  '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/map': typeof AuthenticatedAdminMapRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/resources': typeof AuthenticatedAdminResourcesRoute
   '/_authenticated/admin/safety': typeof AuthenticatedAdminSafetyRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -459,9 +479,11 @@ export interface FileRouteTypes {
     | '/public/resources'
     | '/public/safety'
     | '/admin/alerts'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/map'
     | '/admin/notifications'
+    | '/admin/profile'
     | '/admin/resources'
     | '/admin/safety'
     | '/admin/users'
@@ -502,9 +524,11 @@ export interface FileRouteTypes {
     | '/public/resources'
     | '/public/safety'
     | '/admin/alerts'
+    | '/admin/analytics'
     | '/admin/audit'
     | '/admin/map'
     | '/admin/notifications'
+    | '/admin/profile'
     | '/admin/resources'
     | '/admin/safety'
     | '/admin/users'
@@ -549,9 +573,11 @@ export interface FileRouteTypes {
     | '/public/resources'
     | '/public/safety'
     | '/_authenticated/admin/alerts'
+    | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/map'
     | '/_authenticated/admin/notifications'
+    | '/_authenticated/admin/profile'
     | '/_authenticated/admin/resources'
     | '/_authenticated/admin/safety'
     | '/_authenticated/admin/users'
@@ -701,6 +727,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAlertsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/analytics': {
+      id: '/_authenticated/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/audit': {
       id: '/_authenticated/admin/audit'
       path: '/audit'
@@ -720,6 +753,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/admin/notifications'
       preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/profile': {
+      id: '/_authenticated/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AuthenticatedAdminProfileRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/resources': {
@@ -916,9 +956,11 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAlertsRoute: typeof AuthenticatedAdminAlertsRoute
+  AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminMapRoute: typeof AuthenticatedAdminMapRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
+  AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminResourcesRoute: typeof AuthenticatedAdminResourcesRoute
   AuthenticatedAdminSafetyRoute: typeof AuthenticatedAdminSafetyRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -929,9 +971,11 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAlertsRoute: AuthenticatedAdminAlertsRoute,
+  AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminMapRoute: AuthenticatedAdminMapRoute,
   AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
+  AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
   AuthenticatedAdminResourcesRoute: AuthenticatedAdminResourcesRoute,
   AuthenticatedAdminSafetyRoute: AuthenticatedAdminSafetyRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,

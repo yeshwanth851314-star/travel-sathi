@@ -90,7 +90,7 @@ export function AppShell({
               onClick={signOut}
               className="flex items-center gap-1 rounded-md px-2 py-2 text-sm hover:bg-muted"
             >
-              <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sign out</span>
+              <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
@@ -102,7 +102,7 @@ export function AppShell({
         onOpenChange={setWalkthroughOpen}
       />
       <div className="mx-auto flex max-w-7xl">
-        <nav className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-56 shrink-0 overflow-y-auto border-r p-3 md:block">
+        <nav className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-56 shrink-0 flex-col justify-between overflow-y-auto border-r p-3 md:flex">
           <ul className="space-y-0.5">
             {nav.map((n) => (
               <li key={n.to}>
@@ -117,10 +117,19 @@ export function AppShell({
               </li>
             ))}
           </ul>
+          <div className="border-t pt-2 mt-2">
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <LogOut className="h-4 w-4" /> Logout
+            </button>
+          </div>
         </nav>
         <div className="min-w-0 flex-1">
           {/* mobile scrollable nav */}
-          <nav className="flex gap-1 overflow-x-auto border-b px-2 py-2 md:hidden">
+          <nav className="flex items-center gap-1 overflow-x-auto border-b px-2 py-2 md:hidden">
             {nav.map((n) => (
               <Link
                 key={n.to}
@@ -132,6 +141,13 @@ export function AppShell({
                 {n.label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={signOut}
+              className="whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10"
+            >
+              Logout
+            </button>
           </nav>
           <main className={cn("p-4 md:p-6", mobileBottom && "pb-24 md:pb-6")}>{children}</main>
         </div>

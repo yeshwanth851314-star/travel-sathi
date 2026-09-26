@@ -2,14 +2,13 @@ import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import {
   Home,
   Siren,
-  FileWarning,
-  LifeBuoy,
-  ListChecks,
-  Users,
-  BookOpen,
+  AlertTriangle,
   Megaphone,
-  Building2,
   Map,
+  Users,
+  FileWarning,
+  ListChecks,
+  Building2,
   Bell,
   User,
 } from "lucide-react";
@@ -18,16 +17,14 @@ import { roleHome } from "@/lib/constants";
 
 const NAV: NavItem[] = [
   { to: "/tourist", label: "Dashboard", icon: Home, exact: true },
-  { to: "/tourist/sos", label: "SOS", icon: Siren },
-  { to: "/tourist/emergency", label: "Active Emergency", icon: Siren },
-  { to: "/tourist/report", label: "Report Incident", icon: FileWarning },
-  { to: "/tourist/assist", label: "Request Assistance", icon: LifeBuoy },
-  { to: "/tourist/incidents", label: "My Incidents", icon: ListChecks },
+  { to: "/tourist/sos", label: "Emergency SOS", icon: Siren },
+  { to: "/tourist/alerts", label: "Active Safety Alerts", icon: AlertTriangle },
+  { to: "/tourist/safety", label: "Announcements & Safety", icon: Megaphone },
+  { to: "/tourist/map", label: "Live Map", icon: Map },
   { to: "/tourist/contacts", label: "Emergency Contacts", icon: Users },
-  { to: "/tourist/safety", label: "Safety Information", icon: BookOpen },
-  { to: "/tourist/alerts", label: "Safety Alerts", icon: Megaphone },
-  { to: "/tourist/resources", label: "Emergency Resources", icon: Building2 },
-  { to: "/tourist/map", label: "Map", icon: Map },
+  { to: "/tourist/report", label: "File a Report", icon: FileWarning },
+  { to: "/tourist/incidents", label: "Active / Recent Reports", icon: ListChecks },
+  { to: "/tourist/resources", label: "Nearby Resources", icon: Building2 },
   { to: "/tourist/notifications", label: "Notifications", icon: Bell },
   { to: "/tourist/profile", label: "Profile", icon: User },
 ];
@@ -35,7 +32,7 @@ const NAV: NavItem[] = [
 const BOTTOM: NavItem[] = [
   { to: "/tourist", label: "Home", icon: Home, exact: true },
   { to: "/tourist/sos", label: "SOS", icon: Siren },
-  { to: "/tourist/incidents", label: "My Incidents", icon: ListChecks },
+  { to: "/tourist/incidents", label: "Reports", icon: ListChecks },
   { to: "/tourist/map", label: "Map", icon: Map },
 ];
 

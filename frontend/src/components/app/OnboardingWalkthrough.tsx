@@ -8,6 +8,8 @@ import {
   ShieldAlert,
   Users,
   Megaphone,
+  BarChart3,
+  ScrollText,
   ArrowRight,
   ArrowLeft,
   Check,
@@ -42,101 +44,115 @@ const STEPS_BY_ROLE: Record<
 > = {
   tourist: [
     {
-      title: "Instant Emergency SOS",
+      title: "📍 Current Location & 🚨 Prominent SOS",
       description:
-        "In an urgent situation, trigger an SOS with one tap to broadcast your live GPS coordinates to our response team.",
+        "Welcome to Travel Sathi! Your dashboard locks onto your live GPS coordinates and keeps the Emergency SOS button front and center.",
       highlights: [
-        "Hold or tap the SOS button to alert responders immediately",
-        "Share continuous live location updates while help is en route",
-        "Track responder assignment and status in real time",
+        "📍 Current Location shows your live GPS coordinates & accuracy with one-tap Refresh",
+        "🚨 Prominent SOS Button broadcasts your location to responders in an emergency",
+        "Track live responder dispatch status as soon as an SOS is triggered",
       ],
       icon: Siren,
       accentClass: "bg-destructive/10 text-destructive border-destructive/20",
-      actionLabel: "View SOS Page",
+      actionLabel: "Open Emergency SOS",
       actionTo: "/tourist/sos",
     },
     {
-      title: "Report Incidents & Request Help",
+      title: "⚠️ Active Safety Alerts & 📢 Announcements",
       description:
-        "Need non-urgent help like a lost passport, medical guidance, or translation? Submit a report or assistance request anytime.",
+        "Stay ahead of local weather advisories, area warnings, and official travel safety announcements right on your dashboard.",
       highlights: [
-        "Attach photos or PDF documents as secure evidence",
-        "Pin your exact location on the interactive map",
-        "Follow every status update on your incident timeline",
+        "⚠️ Active Safety Alerts displays real-time warnings issued for your region",
+        "📢 Recent Announcements highlights verified guidance & travel advisories",
+        "🔔 Notifications alerts you immediately when new safety broadcasts go live",
+      ],
+      icon: Megaphone,
+      accentClass: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+      actionLabel: "View Safety Alerts",
+      actionTo: "/tourist/alerts",
+    },
+    {
+      title: "📋 File a Report & 🆘 Emergency Contacts",
+      description:
+        "Manage your personal emergency contacts and file non-emergency incident or assistance reports anytime.",
+      highlights: [
+        "🆘 Emergency Contacts lets you save primary family/friends for quick calling & dispatch reference",
+        "📋 Your Active / Recent Reports tracks every submitted incident & responder update",
+        "Use 'File a Report' or 'Request Assistance' to attach photo/PDF evidence",
       ],
       icon: FileWarning,
       accentClass: "bg-primary/10 text-primary border-primary/20",
-      actionLabel: "Report an Incident",
+      actionLabel: "File a Report",
       actionTo: "/tourist/report",
     },
     {
-      title: "Safety Map, Alerts & Contacts",
+      title: "🗺️ Quick Access to Map & 🏥 Nearby Resources",
       description:
-        "Stay prepared with verified local resources, real-time safety advisories, and your personal emergency contacts.",
+        "Locate verified hospitals, police stations, fire stations, and tourist help centers sorted by distance from your GPS position.",
       highlights: [
-        "Add a primary emergency contact so responders know who to reach",
-        "Find nearby hospitals, police stations, and tourist help centers",
-        "Receive instant notifications for active weather or area alerts",
+        "🗺️ Quick Access to Map opens the interactive live map of resources and incidents",
+        "🏥 Nearby Emergency Resources calculates distance (km) from your current location",
+        "Tap Call on any verified hospital, police station, or help center for instant dial",
       ],
       icon: MapPin,
       accentClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-      actionLabel: "Add Emergency Contacts",
-      actionTo: "/tourist/contacts",
+      actionLabel: "Open Live Map",
+      actionTo: "/tourist/map",
     },
   ],
   responder: [
     {
-      title: "Live SOS & Incident Triage",
+      title: "🏠 Dashboard & 🚨 Active Incidents",
       description:
-        "Monitor incoming tourist SOS alerts and incident reports in real time, prioritized by severity.",
+        "Your Responder Command Center gives you real-time visibility into all active emergencies and tourist assistance requests.",
       highlights: [
-        "Critical SOS alerts appear at the top of your queue immediately",
-        "Filter active cases by severity, status, or category",
-        "Self-assign unclaimed incidents with a single click",
+        "🏠 Dashboard summarizes active queue, critical SOS count, and unassigned cases",
+        "🚨 Active Incidents lets you filter by severity, status, and self-assign cases",
+        "Critical SOS broadcasts appear at the top of your triage queue automatically",
       ],
       icon: Siren,
       accentClass: "bg-destructive/10 text-destructive border-destructive/20",
-      actionLabel: "Open Incident Queue",
+      actionLabel: "Go to Active Incidents",
       actionTo: "/responder/incidents",
     },
     {
-      title: "Field Dispatch & Status Updates",
+      title: "📋 Assigned Incidents & Field Dispatch",
       description:
-        "Keep tourists and command staff informed as you progress through each stage of the response.",
+        "Work through your assigned incidents and keep both the tourist and command staff updated in real time.",
       highlights: [
-        "Update status from Accepted → En Route → Assistance Provided → Resolved",
-        "Record internal responder notes visible to staff",
-        "Inspect tourist medical/travel notes and emergency contacts",
+        "📋 Assigned Incidents lists all active cases currently assigned to you",
+        "Progress status from Accepted → En Route → Assistance Provided → Resolved",
+        "Add responder notes, inspect uploaded evidence, and view tourist emergency contacts",
       ],
       icon: ClipboardCheck,
       accentClass: "bg-primary/10 text-primary border-primary/20",
-      actionLabel: "Assigned to Me",
+      actionLabel: "View Assigned Incidents",
       actionTo: "/responder/assigned",
     },
     {
-      title: "Operations Map & Evidence Review",
+      title: "🗺️ Live Map, 🔔 Notifications, 📜 History & 👤 Profile",
       description:
-        "Visualize all active incidents and emergency facilities on the live map and inspect uploaded evidence securely.",
+        "Navigate field operations with live GPS plotting, instant notifications, and your complete response archive.",
       highlights: [
-        "View live GPS coordinates and location history trails",
-        "Open signed URLs for tourist-uploaded photos and documents",
-        "Review completed cases anytime in Response History",
+        "🗺️ Live Map plots all active tourist SOS/incident locations & emergency facilities",
+        "🔔 Notifications & 📜 Incident History track dispatch alerts and resolved cases",
+        "👤 Profile & 🚪 Logout let you update your callsign/phone or sign out securely",
       ],
       icon: MapPin,
       accentClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-      actionLabel: "Open Operations Map",
+      actionLabel: "Open Live Map",
       actionTo: "/responder/map",
     },
   ],
   admin: [
     {
-      title: "Command Overview & Dispatch",
+      title: "🏠 Dashboard, 🚨 Incidents & 👥 Users",
       description:
-        "Monitor platform-wide safety metrics, oversee all active SOS alerts, and assign responders to incoming cases.",
+        "Oversee platform-wide operations, dispatch responders to incidents, and manage user & staff roles.",
       highlights: [
-        "Track open SOS alerts, active incidents, and resolution metrics",
-        "Assign or reassign any incident to available responders",
-        "Manage status transitions and resolution notes centrally",
+        "🏠 Dashboard & 🚨 Incidents let you monitor active SOS cases and assign responders",
+        "👥 Users lets you search accounts and promote verified staff to Responder or Admin",
+        "Full lifecycle control over incident assignments, statuses, and resolutions",
       ],
       icon: ShieldAlert,
       accentClass: "bg-destructive/10 text-destructive border-destructive/20",
@@ -144,38 +160,52 @@ const STEPS_BY_ROLE: Record<
       actionTo: "/admin/incidents",
     },
     {
-      title: "Broadcast Alerts & Safety Directory",
+      title: "🛡️ Safety Information, 🏥 Resources & ⚠️ Safety Alerts",
       description:
-        "Publish verified safety guides, maintain emergency resource coordinates, and broadcast live area alerts.",
+        "Maintain verified public safety content, emergency facility directories, and real-time area broadcasts.",
       highlights: [
-        "Publishing an active Safety Alert notifies all users immediately",
-        "Verify and update hospitals, police stations, and embassies",
-        "Manage published safety articles and review dates",
+        "🛡️ Safety Information manages official announcements & travel safety articles",
+        "🏥 Emergency Resources maintains verified hospitals, police, fire & help centers",
+        "⚠️ Safety Alerts broadcasts live warnings to all tourists and staff immediately",
       ],
       icon: Megaphone,
-      accentClass: "bg-primary/10 text-primary border-primary/20",
-      actionLabel: "Safety Alerts",
+      accentClass: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+      actionLabel: "Manage Safety Alerts",
       actionTo: "/admin/alerts",
     },
     {
-      title: "User Roles & Security Audit Trail",
+      title: "🗺️ Live Map & 📊 Analytics",
       description:
-        "Control staff permissions and review the immutable audit log of every administrative and operational action.",
+        "Gain spatial awareness on the Live Map and analyze incident volume, severity, and resolution trends in Analytics.",
       highlights: [
-        "Promote verified personnel to Responder or Admin roles",
-        "Search users by name, email, or assigned role",
-        "Inspect timestamped audit logs across all entities",
+        "🗺️ Live Map displays all active incidents and verified emergency resources",
+        "📊 Analytics visualizes incidents by type, severity, status, and 7-day trends",
+        "Track overall resolution rate and top reported incident categories",
       ],
-      icon: Users,
+      icon: BarChart3,
+      accentClass: "bg-primary/10 text-primary border-primary/20",
+      actionLabel: "Open Analytics",
+      actionTo: "/admin/analytics",
+    },
+    {
+      title: "📜 Audit Logs, 🔔 Notifications & 👤 Profile",
+      description:
+        "Ensure complete operational accountability with immutable audit logs, real-time notifications, and profile management.",
+      highlights: [
+        "📜 Audit Logs records every role change, alert broadcast, and incident action",
+        "🔔 Notifications keeps you updated on critical SOS triggers and assignments",
+        "👤 Profile & 🚪 Logout let you manage your administrator details or sign out",
+      ],
+      icon: ScrollText,
       accentClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-      actionLabel: "Users & Roles",
-      actionTo: "/admin/users",
+      actionLabel: "View Audit Logs",
+      actionTo: "/admin/audit",
     },
   ],
 };
 
 export function getWalkthroughStorageKey(userId: string, roleLabel: string) {
-  return `travel_sathi_walkthrough_v1_${userId}_${roleLabel.toLowerCase()}`;
+  return `travel_sathi_walkthrough_v2_${userId}_${roleLabel.toLowerCase()}`;
 }
 
 export function OnboardingWalkthrough({
