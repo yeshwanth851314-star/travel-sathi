@@ -155,12 +155,9 @@ function RootComponent() {
 
   useEffect(() => {
     try {
-      const savedTheme = localStorage.getItem("travel_sathi_theme_v2");
-      if (savedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      document.documentElement.classList.remove("dark");
+      localStorage.removeItem("travel_sathi_theme_v2");
+      localStorage.removeItem("travel_sathi_theme");
     } catch {
       // ignore localStorage errors
     }

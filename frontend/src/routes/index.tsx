@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ShieldAlert,
@@ -12,8 +11,6 @@ import {
   Building2,
   BookOpen,
   Lock,
-  Sun,
-  Moon,
   ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,27 +39,6 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    try {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  function toggleTheme() {
-    try {
-      const nextDark = !document.documentElement.classList.contains("dark");
-      document.documentElement.classList.toggle("dark", nextDark);
-      localStorage.setItem("travel_sathi_theme_v2", nextDark ? "dark" : "light");
-      setIsDark(nextDark);
-    } catch {
-      // ignore
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Subtle Top Emergency Bar */}
@@ -102,14 +78,6 @@ function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              aria-label="Toggle color theme"
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
             <Link to="/login">
               <Button variant="ghost" size="sm" className="font-medium">
                 Sign In

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bell, CircleHelp, LogOut, Moon, ShieldAlert, Sun } from "lucide-react";
+import { Bell, CircleHelp, LogOut, ShieldAlert } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,7 +37,6 @@ export function AppShell({
   const unread = notes?.filter((n) => !n.is_read).length ?? 0;
   const [walkthroughOpen, setWalkthroughOpen] = useState(false);
   const [switchingRole, setSwitchingRole] = useState(false);
-  const [isDark, setIsDark] = useState(false);
 
   const currentRole: Role =
     roleLabel.toLowerCase() === "admin"
@@ -48,7 +47,6 @@ export function AppShell({
 
   useEffect(() => {
     try {
-      setIsDark(document.documentElement.classList.contains("dark"));
       const seen = localStorage.getItem(getWalkthroughStorageKey(userId, roleLabel));
       if (!seen) {
         setWalkthroughOpen(true);
@@ -57,17 +55,6 @@ export function AppShell({
       // Ignore localStorage access errors
     }
   }, [userId, roleLabel]);
-
-  function toggleTheme() {
-    try {
-      const nextDark = !document.documentElement.classList.contains("dark");
-      document.documentElement.classList.toggle("dark", nextDark);
-      localStorage.setItem("travel_sathi_theme_v2", nextDark ? "dark" : "light");
-      setIsDark(nextDark);
-    } catch {
-      // ignore
-    }
-  }
 
   async function handleSwitchRole(nextRole: Role) {
     if (nextRole === currentRole || switchingRole) return;
@@ -153,16 +140,6 @@ export function AppShell({
             >
               <CircleHelp className="h-4 w-4" />
               <span className="hidden sm:inline">Guide</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              aria-label="Toggle color theme"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
             <Link
