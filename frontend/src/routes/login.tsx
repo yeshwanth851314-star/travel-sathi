@@ -1,11 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShieldAlert, ArrowLeft, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  ShieldAlert,
+  ArrowLeft,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  Compass,
+  Siren,
+  ShieldCheck,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { errMsg } from "@/lib/constants";
+import { errMsg, roleHome, type Role } from "@/lib/constants";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -14,7 +23,8 @@ export const Route = createFileRoute("/login")({
       { title: "Sign in — Travel Sathi" },
       {
         name: "description",
-        content: "Sign in or create a Travel Sathi tourist or emergency responder account.",
+        content:
+          "Sign in or create a Travel Sathi Tourist, Emergency Responder, or Administrator account.",
       },
       { property: "og:title", content: "Sign in — Travel Sathi" },
       { property: "og:description", content: "Sign in or create a Travel Sathi account." },
@@ -23,9 +33,41 @@ export const Route = createFileRoute("/login")({
   component: Login,
 });
 
+const ROLE_OPTIONS: {
+  value: Role;
+  label: string;
+  emoji: string;
+  sub: string;
+  icon: typeof Compass;
+}[] = [
+  {
+    value: "tourist",
+    label: "Tourist",
+    emoji: "🧳",
+    sub: "SOS, Alerts & Safety Map",
+    icon: Compass,
+  },
+  {
+    value: "responder",
+    label: "Responder",
+    emoji: "🚨",
+    sub: "Active & Assigned Incidents",
+    icon: Siren,
+  },
+  {
+    value: "admin",
+    label: "Administrator",
+    emoji: "🛡️",
+    sub: "Users, Analytics & Audit",
+    icon: ShieldCheck,
+  },
+];
+
 function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"in" | "up">("in");
+  const [selectedRole, setSelectedRole] = useState<Role | "auto">("auto");
+  const [signupRole, setSignupRole] = useState<Role>("tourist");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -40,18 +82,30 @@ function Login() {
       if (mode === "in") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success("Welcome back to Travel Sathi!");
-        navigate({ to: "/home" });
+        if (selectedRole !== "auto") {
+          await supabase.rpc("switch_my_role", { _role: selectedRole });
+          toast.success(`Signed in as ${selectedRole.toUpperCase()}!`);
+          navigate({ to: roleHome(selectedRole) });
+        } else {
+          toast.success("Welcome back to Travel Sathi!");
+          navigate({ to: "/home" });
+        }
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: window.location.origin + "/home",
-            data: { full_name: name },
+            data: { full_name: name, role: signupRole },
           },
         });
         if (error) throw error;
+        if (data.session) {
+          await supabase.rpc("switch_my_role", { _role: signupRole });
+          toast.success(`Welcome to Travel Sathi! Signed in as ${signupRole}.`);
+          navigate({ to: roleHome(signupRole) });
+          return;
+        }
         setMsg({
           type: "success",
           text: "Registration initiated! Please check your email to verify your account, then sign in.",
@@ -67,9 +121,30 @@ function Login() {
     }
   }
 
+  async function quickDemoLogin(role: Role, demoEmail: string) {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: "TravelSathi2026!",
+      });
+      if (error) throw error;
+      await supabase.rpc("switch_my_role", { _role: role });
+      toast.success(`Signed into ${role.toUpperCase()} portal!`);
+      navigate({ to: roleHome(role) });
+    } catch (err) {
+      const formatted = errMsg(err);
+      setMsg({ type: "error", text: formatted });
+      toast.error(formatted);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md space-y-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-md space-y-5">
         <div className="flex items-center justify-between">
           <Link
             to="/"
@@ -80,8 +155,8 @@ function Login() {
           </Link>
         </div>
 
-        <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-2 shadow-xs">
+        <div className="text-center space-y-1.5">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-1 shadow-xs">
             <ShieldAlert className="h-7 w-7 text-primary" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground font-display">
@@ -92,8 +167,8 @@ function Login() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-card p-6 shadow-xs sm:p-8">
-          <div className="flex rounded-lg bg-muted p-1 mb-6 text-sm font-medium">
+        <div className="rounded-2xl border bg-card p-6 shadow-xs sm:p-7">
+          <div className="flex rounded-lg bg-muted p-1 mb-5 text-sm font-medium">
             <button
               type="button"
               className={`flex-1 rounded-md py-1.5 transition-colors ${
@@ -125,13 +200,57 @@ function Login() {
           </div>
 
           <form onSubmit={submit} className="space-y-4">
+            {/* Role selection for Sign In or Create Account */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {mode === "up" ? "Select Account Role" : "Select Portal Role"}
+                </Label>
+                {mode === "in" && selectedRole !== "auto" && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole("auto")}
+                    className="text-[11px] text-primary hover:underline"
+                  >
+                    Use saved role
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {ROLE_OPTIONS.map((r) => {
+                  const active = mode === "up" ? signupRole === r.value : selectedRole === r.value;
+                  return (
+                    <button
+                      key={r.value}
+                      type="button"
+                      onClick={() => {
+                        if (mode === "up") setSignupRole(r.value);
+                        else setSelectedRole(r.value);
+                      }}
+                      className={`flex flex-col items-center rounded-xl border p-2.5 text-center transition-all ${
+                        active
+                          ? "border-primary bg-primary/10 text-foreground ring-2 ring-primary/20"
+                          : "bg-muted/30 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                      }`}
+                    >
+                      <span className="text-lg leading-none mb-1">{r.emoji}</span>
+                      <span className="text-xs font-bold">{r.label}</span>
+                      <span className="text-[10px] leading-tight opacity-80 mt-0.5 line-clamp-1">
+                        {r.sub}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {mode === "up" && (
               <div className="space-y-1.5">
                 <Label htmlFor="fullname">Full Name</Label>
                 <Input
                   id="fullname"
                   required
-                  placeholder="e.g. John Doe"
+                  placeholder="e.g. Pratibha"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoComplete="name"
@@ -204,14 +323,57 @@ function Login() {
                   Please wait…
                 </>
               ) : mode === "in" ? (
-                "Sign In"
+                selectedRole !== "auto" ? (
+                  `Sign In as ${ROLE_OPTIONS.find((r) => r.value === selectedRole)?.label}`
+                ) : (
+                  "Sign In"
+                )
               ) : (
-                "Create Account"
+                `Create ${ROLE_OPTIONS.find((r) => r.value === signupRole)?.label} Account`
               )}
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-muted-foreground">
+          {/* 1-Click Instant Demo Portal Access */}
+          <div className="mt-5 pt-4 border-t space-y-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-center text-muted-foreground">
+              Instant Demo Portal Preview
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => quickDemoLogin("tourist", "tourist@travelsathi.demo")}
+                className="text-xs h-8 px-2"
+              >
+                🧳 Tourist
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => quickDemoLogin("responder", "responder@travelsathi.demo")}
+                className="text-xs h-8 px-2"
+              >
+                🚨 Responder
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => quickDemoLogin("admin", "admin@travelsathi.demo")}
+                className="text-xs h-8 px-2"
+              >
+                🛡️ Admin
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-5 text-center text-xs text-muted-foreground">
             By continuing, you agree to our{" "}
             <Link to="/terms" className="underline hover:text-foreground">
               Terms of Service

@@ -9,24 +9,20 @@ import {
   FileWarning,
   ListChecks,
   Building2,
-  Bell,
-  User,
 } from "lucide-react";
 import { AppShell, type NavItem } from "@/components/app/AppShell";
 import { roleHome } from "@/lib/constants";
 
 const NAV: NavItem[] = [
-  { to: "/tourist", label: "Dashboard", icon: Home, exact: true },
-  { to: "/tourist/sos", label: "Emergency SOS", icon: Siren },
-  { to: "/tourist/alerts", label: "Active Safety Alerts", icon: AlertTriangle },
-  { to: "/tourist/safety", label: "Announcements & Safety", icon: Megaphone },
-  { to: "/tourist/map", label: "Live Map", icon: Map },
-  { to: "/tourist/contacts", label: "Emergency Contacts", icon: Users },
-  { to: "/tourist/report", label: "File a Report", icon: FileWarning },
-  { to: "/tourist/incidents", label: "Active / Recent Reports", icon: ListChecks },
-  { to: "/tourist/resources", label: "Nearby Resources", icon: Building2 },
-  { to: "/tourist/notifications", label: "Notifications", icon: Bell },
-  { to: "/tourist/profile", label: "Profile", icon: User },
+  { to: "/tourist", label: "📍 Welcome & Location", icon: Home, exact: true },
+  { to: "/tourist/sos", label: "🚨 SOS Button", icon: Siren },
+  { to: "/tourist/alerts", label: "⚠️ Active Safety Alerts", icon: AlertTriangle },
+  { to: "/tourist/safety", label: "📢 Recent Announcements", icon: Megaphone },
+  { to: "/tourist/map", label: "🗺️ Quick Access to Map", icon: Map },
+  { to: "/tourist/contacts", label: "🆘 Emergency Contacts", icon: Users },
+  { to: "/tourist/incidents", label: "📋 Active / Recent Reports", icon: ListChecks },
+  { to: "/tourist/report", label: "📋 File a Report", icon: FileWarning },
+  { to: "/tourist/resources", label: "🏥 Nearby Resources", icon: Building2 },
 ];
 
 const BOTTOM: NavItem[] = [

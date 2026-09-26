@@ -667,6 +667,12 @@ export type Database = {
         };
         Returns: undefined;
       };
+      switch_my_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"];
+        };
+        Returns: undefined;
+      };
       trigger_sos: {
         Args: {
           _accuracy: number | null;
