@@ -46,15 +46,9 @@ export function PageHeader({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-4 rounded-2xl border bg-card/80 backdrop-blur-md p-5 shadow-2xs">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
       <div className="space-y-1">
-        <div className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-          LIVE COMMAND GRID
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground">
-          {title}
-        </h1>
+        <h1 className="text-2xl font-bold font-display tracking-tight text-foreground">{title}</h1>
         {desc && <p className="text-sm text-muted-foreground max-w-2xl">{desc}</p>}
       </div>
       {children}

@@ -8,14 +8,13 @@ import {
   HeartHandshake,
   CheckCircle2,
   ArrowRight,
-  Sparkles,
   ChevronRight,
   Building2,
   BookOpen,
   Lock,
-  Radio,
   Sun,
   Moon,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -43,7 +42,7 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     try {
@@ -57,7 +56,7 @@ function LandingPage() {
     try {
       const nextDark = !document.documentElement.classList.contains("dark");
       document.documentElement.classList.toggle("dark", nextDark);
-      localStorage.setItem("travel_sathi_theme", nextDark ? "dark" : "light");
+      localStorage.setItem("travel_sathi_theme_v2", nextDark ? "dark" : "light");
       setIsDark(nextDark);
     } catch {
       // ignore
@@ -65,46 +64,39 @@ function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background bg-tactical-grid text-foreground flex flex-col selection:bg-primary/20">
-      {/* Top Emergency Advisory Bar */}
-      <div className="bg-destructive/15 border-b border-destructive/30 px-4 py-2 text-center text-xs font-medium text-destructive backdrop-blur-md">
-        <span className="inline-flex flex-wrap items-center justify-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-destructive animate-ping" />
-          <span className="font-mono font-bold uppercase tracking-wider">PRIORITY DISPATCH:</span>
-          In immediate life danger? Dial <strong className="font-mono">112</strong> or{" "}
-          <strong className="font-mono">108</strong> immediately, or trigger our one-tap{" "}
-          <Link to="/login" className="underline font-bold hover:text-destructive/80">
-            Emergency SOS Beacon →
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
+      {/* Subtle Top Emergency Bar */}
+      <div className="border-b bg-muted/60 px-4 py-2 text-center text-xs text-muted-foreground">
+        <span>
+          Need immediate emergency assistance? Call <strong className="text-foreground">112</strong>{" "}
+          (National Emergency) or{" "}
+          <Link to="/login" className="font-semibold text-destructive hover:underline">
+            activate Emergency SOS →
           </Link>
         </span>
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-40 border-b bg-card/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link
             to="/"
-            className="flex items-center gap-2.5 font-display text-xl font-bold tracking-tight group"
+            className="flex items-center gap-2.5 font-display text-lg font-bold tracking-tight"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-destructive/30 bg-destructive/15 text-xl shadow-xs group-hover:scale-105 transition-transform">
-              🚑
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <ShieldAlert className="h-4 w-4" />
             </div>
-            <div className="flex flex-col leading-none">
-              <span>Travel Sathi</span>
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-emerald-500 mt-0.5">
-                ● TACTICAL COMMAND GRID
-              </span>
-            </div>
+            <span>Travel Sathi</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-            <Link to="/public/safety" className="hover:text-primary transition-colors">
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+            <Link to="/public/safety" className="hover:text-foreground transition-colors">
               Safety Information
             </Link>
-            <Link to="/public/resources" className="hover:text-primary transition-colors">
+            <Link to="/public/resources" className="hover:text-foreground transition-colors">
               Emergency Resources
             </Link>
-            <Link to="/terms" className="hover:text-primary transition-colors">
+            <Link to="/terms" className="hover:text-foreground transition-colors">
               Safety Protocols
             </Link>
           </nav>
@@ -113,11 +105,10 @@ function LandingPage() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex h-9 w-9 items-center justify-center rounded-lg border bg-muted/40 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               aria-label="Toggle color theme"
-              title={isDark ? "Switch to Daylight Mode" : "Switch to Obsidian Command Dark Mode"}
             >
-              {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <Link to="/login">
               <Button variant="ghost" size="sm" className="font-medium">
@@ -125,8 +116,8 @@ function LandingPage() {
               </Button>
             </Link>
             <Link to="/login">
-              <Button size="sm" className="font-semibold shadow-xs">
-                Launch Console <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              <Button size="sm" className="font-medium">
+                Get Started <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
               </Button>
             </Link>
           </div>
@@ -134,128 +125,116 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24">
+      <section className="py-16 md:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 font-mono text-xs font-semibold text-primary shadow-2xs">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>NEXT-GEN TOURIST SAFETY & RESCUE GRID</span>
+            <div className="lg:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3.5 py-1 text-xs font-medium text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                <span>Smart Tourist Safety &amp; Emergency Response Platform</span>
               </div>
 
-              <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-balance">
+              <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-balance leading-[1.1]">
                 Travel with confidence. <br className="hidden sm:inline" />
                 <span className="text-primary">Help when it matters.</span>
               </h1>
 
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Travel Sathi unites tourists, rapid medical & police responders, and tourism
-                authorities in a real-time tactical safety network. One-tap geotagged SOS, live
-                radar dispatch, verified shelters, and instant role switching.
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
+                A unified safety platform connecting travelers, emergency responders, and tourism
+                authorities with instant SOS dispatch, verified local directories, and live incident
+                coordination.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-                <Link to="/login" className="w-full sm:w-auto">
-                  <Button
-                    variant="destructive"
-                    size="lg"
-                    className="w-full sm:w-auto h-13 px-7 text-base font-bold shadow-lg glow-crimson hover:scale-[1.02] transition-transform"
-                  >
-                    <ShieldAlert className="mr-2 h-5 w-5" />
-                    🚑 Activate SOS / Enter Command Portal
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Link to="/login">
+                  <Button size="lg" className="h-11 px-6 font-semibold">
+                    Access Platform <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link to="/public/safety" className="w-full sm:w-auto">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto h-13 px-6 text-base font-semibold backdrop-blur-md"
-                  >
-                    Browse Verified Directory
+                <Link to="/public/resources">
+                  <Button variant="outline" size="lg" className="h-11 px-6 font-medium">
+                    Emergency Directory
                   </Button>
                 </Link>
               </div>
 
-              {/* Trust Telemetry Counters */}
-              <div className="pt-6 grid grid-cols-3 gap-4 border-t text-left max-w-lg mx-auto lg:mx-0">
-                <div className="rounded-xl border bg-card/60 p-3 backdrop-blur-sm">
-                  <p className="text-2xl font-bold font-mono text-emerald-500">24/7</p>
-                  <p className="text-xs text-muted-foreground">Tactical Readiness</p>
+              {/* Clean Metrics Row */}
+              <div className="pt-8 grid grid-cols-3 gap-6 border-t max-w-md">
+                <div>
+                  <p className="text-2xl font-bold font-display text-foreground">24/7</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Response Readiness</p>
                 </div>
-                <div className="rounded-xl border bg-card/60 p-3 backdrop-blur-sm">
-                  <p className="text-2xl font-bold font-mono text-primary">&lt; 3 sec</p>
-                  <p className="text-xs text-muted-foreground">SOS Signal Lock</p>
+                <div>
+                  <p className="text-2xl font-bold font-display text-foreground">&lt; 3 sec</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">SOS Dispatch</p>
                 </div>
-                <div className="rounded-xl border bg-card/60 p-3 backdrop-blur-sm">
-                  <p className="text-2xl font-bold font-mono text-foreground">100%</p>
-                  <p className="text-xs text-muted-foreground">Verified Resources</p>
+                <div>
+                  <p className="text-2xl font-bold font-display text-foreground">100%</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Verified Directory</p>
                 </div>
               </div>
             </div>
 
-            {/* Stitch Tactical Command & Radar HUD Card Preview */}
+            {/* Clean Overview Card */}
             <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-md rounded-2xl border border-primary/25 tactical-card p-6 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping" />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
-                      OBSIDIAN COMMAND HUD
-                    </span>
+              <div className="mx-auto max-w-md rounded-2xl border bg-card p-6 sm:p-7 shadow-xs space-y-5">
+                <div className="flex items-center justify-between border-b pb-4">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">
+                      Emergency &amp; Safety Hub
+                    </p>
+                    <p className="text-xs text-muted-foreground">Real-time coordination status</p>
                   </div>
-                  <span className="rounded-md border border-destructive/40 bg-destructive/15 px-2.5 py-0.5 font-mono text-[10px] font-bold text-destructive">
-                    🚨 CRITICAL READY
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2.5 py-1 text-xs font-medium text-success">
+                    <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                    Operational
                   </span>
                 </div>
 
-                {/* Simulated Tactical Radar Sweep Box */}
-                <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-background/80 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold text-primary">
-                      <Radio className="h-3.5 w-3.5 animate-pulse" />
-                      GNSS LOCK: 28.6139° N, 77.2090° E
-                    </span>
-                    <span className="font-mono text-[10px] text-emerald-500 font-bold">±1.4m</span>
-                  </div>
-
-                  <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-center space-y-2 glow-crimson">
-                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-md text-xl">
-                      🚑
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3.5 rounded-xl border p-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+                      <ShieldAlert className="h-4 w-4" />
                     </div>
-                    <h3 className="font-display font-bold text-foreground text-base">
-                      One-Tap Geotagged SOS Beacon
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Transmits live device GPS coordinates, notifies primary emergency contacts,
-                      and dispatches verified ambulance &amp; police responders.
-                    </p>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">One-Tap Geotagged SOS</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Shares live GPS coordinates and alerts nearby responders immediately.
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-2 pt-1 font-mono text-xs">
-                  <div className="flex items-center justify-between p-2.5 rounded-lg border bg-muted/40">
-                    <span className="flex items-center gap-2 text-muted-foreground font-sans">
-                      <MapPin className="h-4 w-4 text-primary" /> Geolocation Telemetry
-                    </span>
-                    <span className="font-bold text-emerald-500">LOCKED · HIGH ACC</span>
+                  <div className="flex items-start gap-3.5 rounded-xl border p-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <MapPin className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">
+                        Verified Hospitals &amp; Police
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Interactive map of verified medical facilities, police booths, and
+                        embassies.
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg border bg-muted/40">
-                    <span className="flex items-center gap-2 text-muted-foreground font-sans">
-                      <Activity className="h-4 w-4 text-primary" /> Dispatch Channel
-                    </span>
-                    <span className="font-bold text-primary">SUPABASE REALTIME</span>
-                  </div>
-                  <div className="flex items-center justify-between p-2.5 rounded-lg border bg-muted/40">
-                    <span className="flex items-center gap-2 text-muted-foreground font-sans">
-                      <PhoneCall className="h-4 w-4 text-primary" /> Emergency Hotlines
-                    </span>
-                    <span className="font-bold text-foreground">112 · 108 · 1363</span>
+
+                  <div className="flex items-start gap-3.5 rounded-xl border p-3.5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Activity className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">Live Status Tracking</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Follow responder assignment and arrival updates in real time.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 <Link to="/login" className="block pt-1">
-                  <Button className="w-full text-xs font-bold h-10" variant="default">
-                    Open Interactive Demo Portals (Tourist / Responder / Admin){" "}
+                  <Button variant="secondary" className="w-full h-10 text-xs font-semibold">
+                    Explore Tourist, Responder &amp; Admin Portals{" "}
                     <ChevronRight className="ml-1 h-4 w-4" />
                   </Button>
                 </Link>

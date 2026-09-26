@@ -75,7 +75,7 @@ function AdminDashboard() {
       to: "/admin/incidents",
     },
     {
-      label: "Critical / SOS Active",
+      label: "Critical / SOS",
       value: metrics.criticalIncidents,
       sub: "Immediate dispatch priority",
       icon: AlertTriangle,
@@ -90,18 +90,18 @@ function AdminDashboard() {
       to: "/admin/users",
     },
     {
-      label: "Safety Information",
-      value: metrics.publishedArticles,
-      sub: "Published advisories",
-      icon: Shield,
-      to: "/admin/safety",
-    },
-    {
       label: "Emergency Resources",
       value: (resources ?? []).length,
       sub: `${metrics.verifiedResources} verified facilities`,
       icon: Building2,
       to: "/admin/resources",
+    },
+    {
+      label: "Safety Information",
+      value: metrics.publishedArticles,
+      sub: "Published advisories",
+      icon: Shield,
+      to: "/admin/safety",
     },
     {
       label: "Safety Alerts",
@@ -126,37 +126,24 @@ function AdminDashboard() {
     },
   ];
 
-  const moduleShortcuts = [
-    { label: "🚨 Incidents", to: "/admin/incidents", icon: Siren },
-    { label: "👥 Users", to: "/admin/users", icon: Users },
-    { label: "🛡️ Safety Information", to: "/admin/safety", icon: Shield },
-    { label: "🏥 Emergency Resources", to: "/admin/resources", icon: Building2 },
-    { label: "⚠️ Safety Alerts", to: "/admin/alerts", icon: AlertTriangle },
-    { label: "🗺️ Live Map", to: "/admin/map", icon: Map },
-    { label: "📊 Analytics", to: "/admin/analytics", icon: BarChart3 },
-    { label: "📜 Audit Logs", to: "/admin/audit", icon: ScrollText },
-    { label: "🔔 Notifications", to: "/admin/notifications", icon: Bell },
-    { label: "👤 Profile", to: "/admin/profile", icon: User },
-  ];
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
-        title="Administrator Command Dashboard"
-        desc="Global operational oversight, responder dispatch governance, verified directory management, and audit logs."
+        title="Administrator Overview"
+        desc="Operational oversight, responder dispatch governance, verified directory management, and audit logs."
       >
         <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <Link to="/admin/analytics">
               <BarChart3 className="h-4 w-4 mr-1.5" /> Analytics
             </Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <Link to="/admin/map">
               <Map className="h-4 w-4 mr-1.5" /> Live Map
             </Link>
           </Button>
-          <Button asChild>
+          <Button asChild size="sm">
             <Link to="/admin/incidents">
               <Siren className="h-4 w-4 mr-1.5" /> Manage Incidents
             </Link>
@@ -164,95 +151,69 @@ function AdminDashboard() {
         </div>
       </PageHeader>
 
-      {/* KPI Cards */}
-      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Clean KPI Grid */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((k) => {
           const Icon = k.icon;
           return (
             <Link
               key={k.label}
               to={k.to}
-              className={`rounded-xl border border-l-4 p-4 transition-all hover:border-primary/60 ${
-                k.danger
-                  ? "border-l-destructive border-destructive/40 bg-destructive/10 glow-crimson"
-                  : "border-l-primary tactical-card"
-              }`}
+              className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 shadow-2xs"
             >
-              <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                 <span>{k.label}</span>
-                <Icon
-                  className={`h-4 w-4 ${k.danger ? "text-destructive animate-pulse" : "text-primary"}`}
-                />
+                <Icon className={`h-4 w-4 ${k.danger ? "text-destructive" : "text-primary"}`} />
               </div>
               <p
-                className={`mt-2 text-2xl font-extrabold font-mono ${
+                className={`mt-2 text-2xl font-bold font-display ${
                   k.danger ? "text-destructive" : "text-foreground"
                 }`}
               >
                 {k.value}
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{k.sub}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{k.sub}</p>
             </Link>
           );
         })}
       </div>
 
-      {/* Quick Module Directory */}
-      <div className="rounded-2xl border tactical-card p-5 space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-display font-bold uppercase tracking-wider text-foreground">
-            Administrator Tactical Modules
-          </h2>
-          <span className="font-mono text-[10px] text-primary uppercase">10 Active Consoles</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
-          {moduleShortcuts.map((m) => (
-            <Link
-              key={m.to}
-              to={m.to}
-              className="flex items-center justify-between rounded-xl border bg-background/60 px-3 py-2.5 text-xs font-semibold hover:border-primary/50 hover:bg-primary/10 transition-all"
-            >
-              <span className="truncate">{m.label}</span>
-              <ArrowRight className="h-3.5 w-3.5 text-primary shrink-0 ml-1" />
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {/* Active Incidents & Recent Audit Logs */}
       <div className="grid gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-7 rounded-2xl border tactical-card p-5 space-y-4">
+        <div className="lg:col-span-7 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <h2 className="font-display font-bold text-base">Active Incidents Queue</h2>
+            <h2 className="font-semibold text-base text-foreground">Active Incidents Queue</h2>
             <Link
               to="/admin/incidents"
               className="text-xs font-medium text-primary hover:underline"
             >
-              View all incidents →
+              View all →
             </Link>
           </div>
           {!metrics.recentActive.length ? (
-            <div className="rounded-xl border border-dashed p-6 text-center text-xs text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
               No active incidents requiring attention right now.
             </div>
           ) : (
-            <div className="divide-y rounded-xl border bg-background/40 overflow-hidden">
+            <div className="divide-y rounded-xl border">
               {metrics.recentActive.map((inc) => (
                 <Link
                   key={inc.id}
                   to="/admin/incidents/$incidentId"
                   params={{ incidentId: inc.id }}
-                  className="flex items-center justify-between gap-3 p-3.5 hover:bg-muted/40 transition-colors"
+                  className="flex items-center justify-between gap-3 p-4 hover:bg-muted/40 transition-colors"
                 >
-                  <div className="min-w-0 space-y-0.5">
+                  <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-primary">{inc.ref}</span>
+                      <span className="font-mono text-xs font-semibold text-muted-foreground">
+                        {inc.ref}
+                      </span>
                       <SeverityBadge severity={inc.severity} />
-                      <span className="font-mono text-[10px] font-semibold uppercase text-muted-foreground">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {KIND_LABEL[inc.kind]}
                       </span>
                     </div>
-                    <p className="text-sm font-semibold truncate">{inc.category}</p>
+                    <p className="text-sm font-semibold text-foreground truncate">{inc.category}</p>
                     <p className="text-xs text-muted-foreground">
                       Reporter: {inc.reporter?.full_name || inc.reporter?.email || "Tourist"} ·{" "}
                       {inc.responder?.full_name
@@ -267,31 +228,29 @@ function AdminDashboard() {
           )}
         </div>
 
-        <div className="lg:col-span-5 rounded-2xl border tactical-card p-5 space-y-4">
+        <div className="lg:col-span-5 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <h2 className="font-display font-bold text-base">Recent Audit Logs</h2>
+            <h2 className="font-semibold text-base text-foreground">Recent Audit Logs</h2>
             <Link to="/admin/audit" className="text-xs font-medium text-primary hover:underline">
-              Full audit log →
+              Full log →
             </Link>
           </div>
           {!metrics.recentAudits.length ? (
-            <div className="rounded-xl border border-dashed p-6 text-center text-xs text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
               No audit events recorded yet.
             </div>
           ) : (
-            <div className="divide-y rounded-xl border bg-background/40 overflow-hidden">
+            <div className="divide-y rounded-xl border">
               {metrics.recentAudits.map((a) => (
-                <div key={a.id} className="p-3.5 text-xs space-y-0.5">
+                <div key={a.id} className="p-4 text-xs space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold uppercase text-foreground">
-                      {a.action}
-                    </span>
-                    <span className="font-mono text-[11px] text-muted-foreground">
+                    <span className="font-semibold text-foreground">{a.action}</span>
+                    <span className="text-muted-foreground">
                       {format(new Date(a.created_at), "MMM d, HH:mm")}
                     </span>
                   </div>
                   <p className="text-muted-foreground">
-                    Entity: <span className="font-mono text-primary">{a.entity}</span> · Actor:{" "}
+                    Entity: <span className="font-mono">{a.entity}</span> · Actor:{" "}
                     {a.actor?.full_name || a.actor?.email || "System"}
                   </p>
                 </div>

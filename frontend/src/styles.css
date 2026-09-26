@@ -73,91 +73,90 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.982 0.006 235);
-  --foreground: oklch(0.18 0.035 250);
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.003 247);
+  --foreground: oklch(0.18 0.028 255);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.035 250);
+  --card-foreground: oklch(0.18 0.028 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.035 250);
-  --primary: oklch(0.55 0.14 215);
-  --primary-foreground: oklch(0.99 0.005 230);
-  --secondary: oklch(0.945 0.015 230);
-  --secondary-foreground: oklch(0.25 0.045 245);
-  --muted: oklch(0.95 0.01 235);
-  --muted-foreground: oklch(0.48 0.03 245);
-  --accent: oklch(0.92 0.035 210);
-  --accent-foreground: oklch(0.24 0.06 225);
-  --destructive: oklch(0.58 0.22 22);
+  --popover-foreground: oklch(0.18 0.028 255);
+  --primary: oklch(0.48 0.16 252);
+  --primary-foreground: oklch(0.99 0.003 247);
+  --secondary: oklch(0.96 0.008 247);
+  --secondary-foreground: oklch(0.24 0.03 255);
+  --muted: oklch(0.96 0.006 247);
+  --muted-foreground: oklch(0.48 0.022 255);
+  --accent: oklch(0.95 0.015 250);
+  --accent-foreground: oklch(0.24 0.04 252);
+  --destructive: oklch(0.55 0.21 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.58 0.15 160);
+  --success: oklch(0.55 0.14 155);
   --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.76 0.16 75);
+  --warning: oklch(0.75 0.15 75);
   --warning-foreground: oklch(0.22 0.05 60);
-  --sev-low: oklch(0.56 0.12 220);
-  --sev-medium: oklch(0.74 0.16 75);
-  --sev-high: oklch(0.64 0.2 42);
-  --sev-critical: oklch(0.58 0.23 22);
-  --border: oklch(0.89 0.015 235);
-  --input: oklch(0.88 0.015 235);
-  --ring: oklch(0.58 0.14 215);
-  --chart-1: oklch(0.62 0.22 22);
-  --chart-2: oklch(0.65 0.15 162);
-  --chart-3: oklch(0.62 0.14 215);
-  --chart-4: oklch(0.78 0.17 78);
-  --chart-5: oklch(0.62 0.22 300);
-  --sidebar: oklch(0.975 0.008 240);
-  --sidebar-foreground: oklch(0.18 0.035 250);
-  --sidebar-primary: oklch(0.55 0.14 215);
-  --sidebar-primary-foreground: oklch(0.99 0.005 230);
-  --sidebar-accent: oklch(0.93 0.025 220);
-  --sidebar-accent-foreground: oklch(0.2 0.04 245);
-  --sidebar-border: oklch(0.9 0.015 235);
-  --sidebar-ring: oklch(0.58 0.14 215);
+  --sev-low: oklch(0.52 0.12 240);
+  --sev-medium: oklch(0.72 0.15 75);
+  --sev-high: oklch(0.62 0.18 42);
+  --sev-critical: oklch(0.55 0.21 25);
+  --border: oklch(0.91 0.008 247);
+  --input: oklch(0.9 0.01 247);
+  --ring: oklch(0.48 0.16 252);
+  --chart-1: oklch(0.48 0.16 252);
+  --chart-2: oklch(0.55 0.14 155);
+  --chart-3: oklch(0.62 0.18 42);
+  --chart-4: oklch(0.75 0.15 75);
+  --chart-5: oklch(0.55 0.21 25);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.18 0.028 255);
+  --sidebar-primary: oklch(0.48 0.16 252);
+  --sidebar-primary-foreground: oklch(0.99 0.003 247);
+  --sidebar-accent: oklch(0.96 0.01 247);
+  --sidebar-accent-foreground: oklch(0.18 0.028 255);
+  --sidebar-border: oklch(0.91 0.008 247);
+  --sidebar-ring: oklch(0.48 0.16 252);
 }
 
-/* Stitch "Obsidian Command" Dark Tactical Theme */
 .dark {
-  --background: oklch(0.145 0.032 262);
-  --foreground: oklch(0.96 0.01 245);
-  --card: oklch(0.19 0.036 260);
-  --card-foreground: oklch(0.96 0.01 245);
-  --popover: oklch(0.2 0.038 260);
-  --popover-foreground: oklch(0.96 0.01 245);
-  --primary: oklch(0.72 0.14 210);
-  --primary-foreground: oklch(0.13 0.03 260);
-  --secondary: oklch(0.25 0.04 258);
-  --secondary-foreground: oklch(0.95 0.01 245);
-  --muted: oklch(0.235 0.035 260);
-  --muted-foreground: oklch(0.7 0.028 250);
-  --accent: oklch(0.26 0.048 235);
-  --accent-foreground: oklch(0.96 0.01 245);
-  --destructive: oklch(0.63 0.23 18);
+  --background: oklch(0.15 0.02 255);
+  --foreground: oklch(0.96 0.006 247);
+  --card: oklch(0.19 0.022 255);
+  --card-foreground: oklch(0.96 0.006 247);
+  --popover: oklch(0.19 0.022 255);
+  --popover-foreground: oklch(0.96 0.006 247);
+  --primary: oklch(0.62 0.16 250);
+  --primary-foreground: oklch(0.99 0.003 247);
+  --secondary: oklch(0.24 0.025 255);
+  --secondary-foreground: oklch(0.95 0.006 247);
+  --muted: oklch(0.24 0.022 255);
+  --muted-foreground: oklch(0.68 0.02 250);
+  --accent: oklch(0.25 0.03 252);
+  --accent-foreground: oklch(0.96 0.006 247);
+  --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.68 0.16 162);
-  --success-foreground: oklch(0.13 0.03 165);
-  --warning: oklch(0.78 0.16 75);
-  --warning-foreground: oklch(0.16 0.04 65);
-  --sev-low: oklch(0.7 0.13 215);
-  --sev-medium: oklch(0.78 0.16 75);
-  --sev-high: oklch(0.7 0.19 42);
-  --sev-critical: oklch(0.63 0.23 18);
-  --border: oklch(1 0 0 / 11%);
+  --success: oklch(0.62 0.14 155);
+  --success-foreground: oklch(0.14 0.02 160);
+  --warning: oklch(0.76 0.15 75);
+  --warning-foreground: oklch(0.18 0.04 65);
+  --sev-low: oklch(0.65 0.12 240);
+  --sev-medium: oklch(0.76 0.15 75);
+  --sev-high: oklch(0.68 0.18 42);
+  --sev-critical: oklch(0.6 0.2 25);
+  --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.72 0.14 210);
-  --chart-1: oklch(0.63 0.23 18);
-  --chart-2: oklch(0.68 0.16 162);
-  --chart-3: oklch(0.72 0.14 210);
-  --chart-4: oklch(0.78 0.16 75);
-  --chart-5: oklch(0.66 0.22 300);
-  --sidebar: oklch(0.165 0.034 262);
-  --sidebar-foreground: oklch(0.96 0.01 245);
-  --sidebar-primary: oklch(0.72 0.14 210);
-  --sidebar-primary-foreground: oklch(0.13 0.03 260);
-  --sidebar-accent: oklch(0.24 0.042 255);
-  --sidebar-accent-foreground: oklch(0.96 0.01 245);
+  --ring: oklch(0.62 0.16 250);
+  --chart-1: oklch(0.62 0.16 250);
+  --chart-2: oklch(0.62 0.14 155);
+  --chart-3: oklch(0.68 0.18 42);
+  --chart-4: oklch(0.76 0.15 75);
+  --chart-5: oklch(0.6 0.2 25);
+  --sidebar: oklch(0.17 0.02 255);
+  --sidebar-foreground: oklch(0.96 0.006 247);
+  --sidebar-primary: oklch(0.62 0.16 250);
+  --sidebar-primary-foreground: oklch(0.99 0.003 247);
+  --sidebar-accent: oklch(0.24 0.025 255);
+  --sidebar-accent-foreground: oklch(0.96 0.006 247);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.72 0.14 210);
+  --sidebar-ring: oklch(0.62 0.16 250);
 }
 
 @layer base {
@@ -169,6 +168,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
 
   h1,
@@ -184,24 +184,6 @@
   }
 }
 
-/* Stitch Tactical Command Surface Utilities (Solid Matte Surfaces, No Heavy Gradients) */
-.bg-tactical-grid {
-  background-color: var(--color-background);
-}
-
 .tactical-card {
   background-color: var(--card);
-  box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.12);
-}
-
-.glow-crimson {
-  box-shadow: 0 0 0 1px oklch(0.63 0.23 18 / 0.25);
-}
-
-.glow-emerald {
-  box-shadow: 0 0 0 1px oklch(0.68 0.16 162 / 0.25);
-}
-
-.glow-cyan {
-  box-shadow: 0 0 0 1px oklch(0.72 0.14 210 / 0.25);
 }

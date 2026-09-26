@@ -143,41 +143,35 @@ function Login() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background bg-tactical-grid px-4 py-10">
-      <div className="w-full max-w-md space-y-5">
-        <div className="flex items-center justify-between">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
+      <div className="w-full max-w-md space-y-6">
+        <div>
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 rounded-lg border bg-card/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground backdrop-blur transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Back to Command Home
+            Back to Home
           </Link>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            GRID ONLINE
-          </span>
         </div>
 
         <div className="text-center space-y-1.5">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-destructive/35 bg-destructive/15 text-2xl mb-1 shadow-md glow-crimson">
-            🚑
+          <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground mb-1">
+            <ShieldAlert className="h-5 w-5" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-display">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground font-display">
             Travel Sathi
           </h1>
-          <p className="text-xs font-mono uppercase tracking-widest text-primary">
-            Smart Tourist Safety &amp; Emergency Response Grid
-          </p>
+          <p className="text-sm text-muted-foreground">Sign in to access your safety dashboard</p>
         </div>
 
-        <div className="rounded-2xl border tactical-card p-6 sm:p-7">
-          <div className="flex rounded-xl border bg-muted/60 p-1 mb-5 text-sm font-medium">
+        <div className="rounded-2xl border bg-card p-6 sm:p-7 shadow-2xs">
+          <div className="flex rounded-lg bg-muted p-1 mb-6 text-sm font-medium">
             <button
               type="button"
-              className={`flex-1 rounded-lg py-1.5 transition-all ${
+              className={`flex-1 rounded-md py-1.5 transition-colors ${
                 mode === "in"
-                  ? "bg-primary text-primary-foreground shadow-xs font-bold"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => {
@@ -189,9 +183,9 @@ function Login() {
             </button>
             <button
               type="button"
-              className={`flex-1 rounded-lg py-1.5 transition-all ${
+              className={`flex-1 rounded-md py-1.5 transition-colors ${
                 mode === "up"
-                  ? "bg-primary text-primary-foreground shadow-xs font-bold"
+                  ? "bg-card text-foreground shadow-2xs font-semibold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
               onClick={() => {
@@ -204,24 +198,25 @@ function Login() {
           </div>
 
           <form onSubmit={submit} className="space-y-4">
-            {/* Role selection for Sign In or Create Account */}
+            {/* Clean Role Selector */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {mode === "up" ? "Select Account Role" : "Select Portal Role"}
+                <Label className="text-xs font-medium text-muted-foreground">
+                  {mode === "up" ? "Account Role" : "Portal Role"}
                 </Label>
                 {mode === "in" && selectedRole !== "auto" && (
                   <button
                     type="button"
                     onClick={() => setSelectedRole("auto")}
-                    className="text-[11px] text-primary hover:underline"
+                    className="text-xs text-primary hover:underline"
                   >
-                    Use saved role
+                    Use default
                   </button>
                 )}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {ROLE_OPTIONS.map((r) => {
+                  const Icon = r.icon;
                   const active = mode === "up" ? signupRole === r.value : selectedRole === r.value;
                   return (
                     <button
@@ -231,17 +226,14 @@ function Login() {
                         if (mode === "up") setSignupRole(r.value);
                         else setSelectedRole(r.value);
                       }}
-                      className={`flex flex-col items-center rounded-xl border p-2.5 text-center transition-all ${
+                      className={`flex flex-col items-center gap-1.5 rounded-lg border p-2.5 text-center transition-colors ${
                         active
-                          ? "border-primary bg-primary/10 text-foreground ring-2 ring-primary/20"
-                          : "bg-muted/30 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                          ? "border-primary bg-primary/10 text-primary font-semibold"
+                          : "bg-background text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                       }`}
                     >
-                      <span className="text-lg leading-none mb-1">{r.emoji}</span>
-                      <span className="text-xs font-bold">{r.label}</span>
-                      <span className="text-[10px] leading-tight opacity-80 mt-0.5 line-clamp-1">
-                        {r.sub}
-                      </span>
+                      <Icon className="h-4 w-4" />
+                      <span className="text-xs">{r.label}</span>
                     </button>
                   );
                 })}
@@ -298,7 +290,7 @@ function Login() {
                 autoComplete={mode === "in" ? "current-password" : "new-password"}
               />
               {mode === "up" && (
-                <p className="text-[12px] text-muted-foreground">Minimum 8 characters required</p>
+                <p className="text-xs text-muted-foreground">Minimum 8 characters required</p>
               )}
             </div>
 
@@ -338,10 +330,10 @@ function Login() {
             </Button>
           </form>
 
-          {/* 1-Click Instant Demo Portal Access */}
-          <div className="mt-5 pt-4 border-t space-y-2">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-center text-muted-foreground">
-              Instant Demo Portal Preview
+          {/* Clean Quick Demo Access */}
+          <div className="mt-6 pt-5 border-t space-y-2.5">
+            <p className="text-xs font-medium text-center text-muted-foreground">
+              Quick Demo Access
             </p>
             <div className="grid grid-cols-3 gap-2">
               <Button
@@ -350,9 +342,9 @@ function Login() {
                 size="sm"
                 disabled={busy}
                 onClick={() => quickDemoLogin("tourist", "tourist@travelsathi.demo")}
-                className="text-xs h-8 px-2"
+                className="text-xs h-8"
               >
-                🧳 Tourist
+                Tourist
               </Button>
               <Button
                 type="button"
@@ -360,9 +352,9 @@ function Login() {
                 size="sm"
                 disabled={busy}
                 onClick={() => quickDemoLogin("responder", "responder@travelsathi.demo")}
-                className="text-xs h-8 px-2"
+                className="text-xs h-8"
               >
-                🚨 Responder
+                Responder
               </Button>
               <Button
                 type="button"
@@ -370,9 +362,9 @@ function Login() {
                 size="sm"
                 disabled={busy}
                 onClick={() => quickDemoLogin("admin", "admin@travelsathi.demo")}
-                className="text-xs h-8 px-2"
+                className="text-xs h-8"
               >
-                🛡️ Admin
+                Admin
               </Button>
             </div>
           </div>

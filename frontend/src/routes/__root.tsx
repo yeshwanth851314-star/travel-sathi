@@ -137,11 +137,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
-      <body className="bg-tactical-grid">
+      <body>
         {children}
         <Scripts />
       </body>
@@ -155,11 +155,11 @@ function RootComponent() {
 
   useEffect(() => {
     try {
-      const savedTheme = localStorage.getItem("travel_sathi_theme");
-      if (savedTheme === "light") {
-        document.documentElement.classList.remove("dark");
-      } else {
+      const savedTheme = localStorage.getItem("travel_sathi_theme_v2");
+      if (savedTheme === "dark") {
         document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
     } catch {
       // ignore localStorage errors

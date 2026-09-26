@@ -107,162 +107,141 @@ function TouristDashboard() {
   });
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
-      {/* 1. Welcome Message & 2. 📍 Current Location */}
-      <div className="rounded-2xl border tactical-card p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-500 border border-emerald-500/35 glow-emerald">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-            <ShieldCheck className="h-3.5 w-3.5" />
-            VERIFIED SAFE PASS · SHIELD ACTIVE
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-foreground">
+    <div className="space-y-8 max-w-6xl mx-auto pb-10">
+      {/* 1. Welcome Message & 2. Current Location */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-6">
+        <div className="space-y-1">
+          <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-foreground">
             Welcome to Travel Sathi, {displayName}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Your personal tactical travel safety companion — 1-tap SOS dispatch, live alerts, and
-            verified emergency resources.
+            Your personal travel safety hub — emergency assistance, local alerts, and verified
+            resources.
           </p>
         </div>
 
-        {/* 📍 Current Location Card */}
-        <div className="rounded-xl border border-primary/30 bg-background/70 backdrop-blur-md p-3.5 sm:min-w-80 flex items-center justify-between gap-3 glow-cyan">
-          <div className="flex items-start gap-2.5 min-w-0">
-            <div className="rounded-lg bg-primary/15 border border-primary/30 p-2 text-primary shrink-0 mt-0.5">
-              <MapPin className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-primary">
-                📍 Current Location · GNSS
+        {/* Current Location Pill */}
+        <div className="flex items-center gap-3 rounded-xl border bg-card px-4 py-3 shadow-2xs">
+          <div className="rounded-lg bg-primary/10 p-2 text-primary shrink-0">
+            <MapPin className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">Current Location</p>
+            {coords ? (
+              <p className="text-xs font-mono font-semibold text-foreground">
+                {coords.latitude.toFixed(4)}° N, {coords.longitude.toFixed(4)}° E{" "}
+                <span className="font-sans font-normal text-muted-foreground">
+                  (±{Math.round(coords.accuracy)}m)
+                </span>
               </p>
-              {coords ? (
-                <>
-                  <p className="text-xs font-mono font-bold text-foreground truncate mt-0.5">
-                    {coords.latitude.toFixed(4)}° N, {coords.longitude.toFixed(4)}° E
-                  </p>
-                  <p className="font-mono text-[10px] font-semibold text-emerald-500">
-                    ● SATELLITE LOCK (±{Math.round(coords.accuracy)}m)
-                  </p>
-                </>
-              ) : locLoading ? (
-                <p className="text-xs font-mono text-muted-foreground">Acquiring GNSS lock…</p>
-              ) : (
-                <p className="text-xs text-muted-foreground line-clamp-1">
-                  {locError ?? "Tap refresh to lock GPS"}
-                </p>
-              )}
-            </div>
+            ) : locLoading ? (
+              <p className="text-xs text-muted-foreground">Detecting location…</p>
+            ) : (
+              <p className="text-xs text-muted-foreground line-clamp-1">
+                {locError ?? "Location unavailable"}
+              </p>
+            )}
           </div>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={detectLocation}
             disabled={locLoading}
-            className="shrink-0 h-8 px-2.5 text-xs font-mono"
+            className="shrink-0 h-8 px-2.5 text-xs"
           >
-            <LocateFixed className="h-3.5 w-3.5 mr-1 text-primary" />
-            {locLoading ? "…" : "Sync"}
+            <LocateFixed className="h-3.5 w-3.5 mr-1" />
+            {locLoading ? "…" : "Update"}
           </Button>
         </div>
       </div>
 
-      {/* 3. 🚨 SOS Button — Very Prominent */}
+      {/* 3. Prominent SOS Banner */}
       {activeSos ? (
-        <div className="rounded-2xl border-2 border-destructive bg-destructive/15 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 glow-crimson">
+        <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="rounded-2xl bg-destructive p-3.5 text-destructive-foreground shadow-lg">
-              <Siren className="h-7 w-7 animate-bounce" />
+            <div className="rounded-xl bg-destructive p-3 text-destructive-foreground">
+              <Siren className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono font-bold text-destructive text-xs uppercase tracking-widest">
-                  🚨 ACTIVE DISTRESS BEACON
-                </span>
-                <span className="rounded bg-destructive/20 px-2 py-0.5 text-xs text-destructive font-mono font-bold">
-                  {activeSos.ref}
-                </span>
+                <span className="font-semibold text-destructive text-sm">Active Emergency SOS</span>
+                <span className="text-xs text-muted-foreground font-mono">({activeSos.ref})</span>
               </div>
-              <p className="text-sm font-medium text-foreground mt-1 flex items-center gap-2">
-                Live Dispatch Status: <StatusBadge status={activeSos.status} kind="sos" />
+              <p className="text-sm text-muted-foreground mt-0.5 flex items-center gap-2">
+                Status: <StatusBadge status={activeSos.status} kind="sos" />
               </p>
             </div>
           </div>
           <Link to="/tourist/emergency">
-            <Button
-              variant="destructive"
-              size="lg"
-              className="font-bold shadow-lg w-full sm:w-auto"
-            >
-              Open Live Emergency Tracker <ChevronRight className="ml-1 h-4 w-4" />
+            <Button variant="destructive" className="font-semibold w-full sm:w-auto">
+              View Live Response <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="relative overflow-hidden rounded-2xl border-2 border-destructive/45 bg-card p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-2.5 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 rounded-full bg-destructive px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-destructive-foreground shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-white animate-ping" />
-                🚨 ONE-TAP DISTRESS BEACON
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-foreground">
-                In Immediate Danger? Trigger Emergency SOS
+        <div className="rounded-2xl border bg-card p-6 sm:p-7 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+              <Siren className="h-6 w-6" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-lg sm:text-xl font-bold font-display text-foreground">
+                Emergency SOS Assistance
               </h2>
-              <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
-                Transmits your live GPS coordinates, alerts your primary emergency contacts, and
-                dispatches the nearest verified ambulance &amp; police responder unit immediately.
+              <p className="text-sm text-muted-foreground max-w-xl">
+                In immediate danger? Trigger an SOS to share your live GPS coordinates and dispatch
+                the nearest emergency responder.
               </p>
             </div>
-            <Link to="/tourist/sos" className="w-full md:w-auto shrink-0">
-              <Button
-                variant="destructive"
-                size="lg"
-                className="w-full md:w-auto h-16 px-10 text-lg font-extrabold tracking-wider shadow-lg hover:scale-105 transition-transform"
-              >
-                <Siren className="mr-2.5 h-7 w-7 animate-pulse" />
-                TRIGGER SOS NOW
-              </Button>
-            </Link>
           </div>
+          <Link to="/tourist/sos" className="w-full md:w-auto shrink-0">
+            <Button
+              variant="destructive"
+              size="lg"
+              className="w-full md:w-auto h-12 px-8 text-sm font-semibold shadow-xs"
+            >
+              <Siren className="mr-2 h-4 w-4" />
+              Trigger Emergency SOS
+            </Button>
+          </Link>
         </div>
       )}
 
-      {/* 4. ⚠️ Active Safety Alerts & 5. 📢 Recent Announcements */}
+      {/* 4. Active Safety Alerts & 5. Recent Announcements */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* ⚠️ Active Safety Alerts */}
-        <div className="rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        {/* Active Safety Alerts */}
+        <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <AlertTriangle className="h-4 w-4 text-warning" />
-              <h2 className="text-base font-semibold text-foreground">⚠️ Active Safety Alerts</h2>
-              <Badge variant="secondary" className="text-[11px]">
-                {alerts?.length ?? 0}
-              </Badge>
+              <h2 className="text-base font-semibold text-foreground">Active Safety Alerts</h2>
+              {!!alerts?.length && (
+                <Badge variant="secondary" className="text-xs">
+                  {alerts.length}
+                </Badge>
+              )}
             </div>
             <Link to="/tourist/alerts" className="text-xs font-medium text-primary hover:underline">
-              View all alerts →
+              View all
             </Link>
           </div>
 
           {!alerts?.length ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground">
-              No active safety warnings in your area right now.
+            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
+              No active safety alerts in your area.
             </div>
           ) : (
-            <div className="space-y-2.5">
+            <div className="divide-y rounded-xl border">
               {alerts.slice(0, 3).map((a) => (
-                <div
-                  key={a.id}
-                  className="rounded-lg border-l-4 border-l-warning border bg-muted/20 p-3.5 space-y-1"
-                >
+                <div key={a.id} className="p-4 space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-bold text-foreground">{a.title}</span>
+                    <span className="text-sm font-semibold text-foreground">{a.title}</span>
                     <SeverityBadge severity={a.severity} />
                   </div>
                   <p className="text-xs text-muted-foreground line-clamp-2">{a.message}</p>
-                  <p className="text-[11px] text-muted-foreground/80">
-                    {a.area ? `📍 ${a.area} · ` : ""}Active since{" "}
+                  <p className="text-[11px] text-muted-foreground/80 pt-0.5">
+                    {a.area ? `${a.area} · ` : ""}
                     {format(new Date(a.starts_at), "MMM d, HH:mm")}
                   </p>
                 </div>
@@ -271,29 +250,29 @@ function TouristDashboard() {
           )}
         </div>
 
-        {/* 📢 Recent Announcements */}
-        <div className="rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        {/* Recent Announcements */}
+        <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Megaphone className="h-4 w-4 text-primary" />
-              <h2 className="text-base font-semibold text-foreground">📢 Recent Announcements</h2>
+              <h2 className="text-base font-semibold text-foreground">Recent Announcements</h2>
             </div>
             <Link to="/tourist/safety" className="text-xs font-medium text-primary hover:underline">
-              All safety advisories →
+              View all
             </Link>
           </div>
 
           {!announcements?.length ? (
-            <div className="rounded-lg border border-dashed p-6 text-center text-xs text-muted-foreground">
+            <div className="rounded-xl border border-dashed p-8 text-center text-xs text-muted-foreground">
               No recent announcements published yet.
             </div>
           ) : (
-            <div className="space-y-2.5">
+            <div className="divide-y rounded-xl border">
               {announcements.slice(0, 3).map((info) => (
                 <Link
                   key={info.id}
                   to="/tourist/safety"
-                  className="block rounded-lg border bg-muted/20 p-3.5 hover:border-primary/40 transition-colors space-y-1"
+                  className="block p-4 hover:bg-muted/40 transition-colors space-y-1"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-semibold text-foreground line-clamp-1">
@@ -311,43 +290,37 @@ function TouristDashboard() {
         </div>
       </div>
 
-      {/* 6. 🗺️ Quick Access to Map & 7. 🆘 Emergency Contacts */}
+      {/* 6. Quick Access to Map & 7. Emergency Contacts */}
       <div className="grid gap-6 lg:grid-cols-12">
-        {/* 🗺️ Quick Access to Map (5 cols) */}
-        <div className="lg:col-span-5 rounded-xl border bg-card p-5 flex flex-col justify-between gap-4 shadow-2xs">
+        {/* Quick Access to Map (5 cols) */}
+        <div className="lg:col-span-5 rounded-2xl border bg-card p-6 flex flex-col justify-between gap-5 shadow-2xs">
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
-                <MapIcon className="h-3.5 w-3.5" />
-                🗺️ Live Safety Map
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {(resources ?? []).length} verified points
-              </span>
+            <div className="flex items-center gap-2 text-primary">
+              <MapIcon className="h-4 w-4" />
+              <h2 className="text-base font-semibold text-foreground">Interactive Safety Map</h2>
             </div>
-            <h3 className="text-lg font-bold font-display text-foreground">
-              Quick Access to Interactive Map
-            </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              View nearby police stations, 24/7 hospitals, fire stations, tourist help desks, and
-              your active incident pins on an interactive live map.
+              Locate verified police stations, hospitals, embassies, and active safety advisories
+              around your current position.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="rounded-lg border bg-background/80 p-2.5">
-              <span className="text-muted-foreground block">Verified Resources</span>
-              <span className="text-base font-bold text-foreground">
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="rounded-xl border bg-muted/30 p-3">
+              <span className="text-muted-foreground block">Verified Locations</span>
+              <span className="text-lg font-bold text-foreground mt-0.5 block">
                 {(resources ?? []).length}
               </span>
             </div>
-            <div className="rounded-lg border bg-background/80 p-2.5">
-              <span className="text-muted-foreground block">Active Warnings</span>
-              <span className="text-base font-bold text-foreground">{(alerts ?? []).length}</span>
+            <div className="rounded-xl border bg-muted/30 p-3">
+              <span className="text-muted-foreground block">Active Alerts</span>
+              <span className="text-lg font-bold text-foreground mt-0.5 block">
+                {(alerts ?? []).length}
+              </span>
             </div>
           </div>
 
-          <Button asChild className="w-full font-semibold">
+          <Button asChild variant="outline" className="w-full font-medium">
             <Link to="/tourist/map">
               <MapPin className="mr-1.5 h-4 w-4" />
               Open Live Safety Map
@@ -355,12 +328,12 @@ function TouristDashboard() {
           </Button>
         </div>
 
-        {/* 🆘 Emergency Contacts (7 cols) */}
-        <div className="lg:col-span-7 rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        {/* Emergency Contacts (7 cols) */}
+        <div className="lg:col-span-7 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-emerald-600" />
-              <h2 className="text-base font-semibold text-foreground">🆘 Emergency Contacts</h2>
+            <div className="flex items-center gap-2.5">
+              <Users className="h-4 w-4 text-primary" />
+              <h2 className="text-base font-semibold text-foreground">Emergency Contacts</h2>
             </div>
             <Button asChild variant="outline" size="sm" className="h-8 text-xs">
               <Link to="/tourist/contacts">
@@ -371,22 +344,21 @@ function TouristDashboard() {
           </div>
 
           {!contacts?.length ? (
-            <div className="rounded-lg border border-dashed p-6 text-center space-y-2">
-              <p className="text-sm font-medium text-foreground">No emergency contacts saved yet</p>
+            <div className="rounded-xl border border-dashed p-8 text-center space-y-2">
+              <p className="text-sm font-medium text-foreground">No emergency contacts saved</p>
               <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                Add a trusted family member or friend so emergency responders know who to notify in
-                case of an SOS.
+                Add a trusted contact so responders know who to reach during an emergency.
               </p>
               <Button asChild size="sm" variant="secondary">
                 <Link to="/tourist/contacts">Add Primary Contact</Link>
               </Button>
             </div>
           ) : (
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {contacts.slice(0, 4).map((c) => (
                 <div
                   key={c.id}
-                  className="rounded-lg border bg-muted/20 p-3.5 flex items-center justify-between gap-3"
+                  className="rounded-xl border p-3.5 flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 space-y-0.5">
                     <div className="flex items-center gap-1.5">
@@ -394,17 +366,19 @@ function TouristDashboard() {
                         {c.name}
                       </span>
                       {c.is_primary && (
-                        <Badge className="text-[10px] px-1.5 py-0 bg-emerald-600">Primary</Badge>
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                          Primary
+                        </Badge>
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {c.relationship || "Trusted Contact"} · {c.phone}
+                      {c.relationship || "Contact"} · {c.phone}
                     </p>
                   </div>
                   {c.phone && (
                     <a
                       href={`tel:${c.phone}`}
-                      className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20"
+                      className="shrink-0 inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
                     >
                       <Phone className="h-3 w-3" /> Call
                     </a>
@@ -416,15 +390,15 @@ function TouristDashboard() {
         </div>
       </div>
 
-      {/* 8. 📋 Your Active/Recent Reports & File a Report + 9. 🏥 Nearby Emergency Resources */}
+      {/* 8. Your Active/Recent Reports & 9. Nearby Emergency Resources */}
       <div className="grid gap-6 lg:grid-cols-12">
-        {/* 📋 Your Active/Recent & File a Report (7 cols) */}
-        <div className="lg:col-span-7 rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        {/* Your Active/Recent & File a Report (7 cols) */}
+        <div className="lg:col-span-7 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Clock className="h-4 w-4 text-primary" />
               <h2 className="text-base font-semibold text-foreground">
-                📋 Your Active / Recent Reports
+                Active &amp; Recent Reports
               </h2>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -505,20 +479,20 @@ function TouristDashboard() {
           )}
         </div>
 
-        {/* 🏥 Nearby Emergency Resources (5 cols) */}
-        <div className="lg:col-span-5 rounded-xl border bg-card p-5 space-y-4 shadow-2xs">
+        {/* Nearby Emergency Resources (5 cols) */}
+        <div className="lg:col-span-5 rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Building2 className="h-4 w-4 text-primary" />
               <h2 className="text-base font-semibold text-foreground">
-                🏥 Nearby Emergency Resources
+                Nearby Emergency Resources
               </h2>
             </div>
             <Link
               to="/tourist/resources"
               className="text-xs font-medium text-primary hover:underline"
             >
-              Full directory →
+              Full directory
             </Link>
           </div>
 

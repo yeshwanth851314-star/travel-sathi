@@ -71,80 +71,67 @@ function ResponderDashboard() {
         </div>
       </PageHeader>
 
-      <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
-        <div className="rounded-xl border border-l-4 border-l-primary tactical-card p-4">
-          <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border bg-card p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
             <span>Active Queue</span>
             <Siren className="h-4 w-4 text-primary" />
           </div>
-          <p className="mt-2 text-2xl font-extrabold font-mono">{stats.activeCount}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="mt-2 text-2xl font-bold font-display">{stats.activeCount}</p>
+          <p className="text-xs text-muted-foreground mt-1">
             {stats.unassignedCount} awaiting assignment
           </p>
         </div>
 
-        <div className="rounded-xl border border-l-4 border-l-destructive border-destructive/40 bg-destructive/10 p-4 glow-crimson">
-          <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-destructive">
+        <div className="rounded-xl border bg-card p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs font-medium text-destructive">
             <span>Critical / SOS</span>
-            <AlertTriangle className="h-4 w-4 animate-pulse" />
+            <AlertTriangle className="h-4 w-4" />
           </div>
-          <p className="mt-2 text-2xl font-extrabold font-mono text-destructive">
+          <p className="mt-2 text-2xl font-bold font-display text-destructive">
             {stats.criticalCount}
           </p>
-          <p className="text-xs text-muted-foreground mt-0.5">Immediate triage required</p>
+          <p className="text-xs text-muted-foreground mt-1">Immediate response priority</p>
         </div>
 
-        <div className="rounded-xl border border-l-4 border-l-primary tactical-card p-4">
-          <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-xl border bg-card p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
             <span>Assigned to Me</span>
             <ClipboardCheck className="h-4 w-4 text-primary" />
           </div>
-          <p className="mt-2 text-2xl font-extrabold font-mono">{stats.assignedToMeCount}</p>
+          <p className="mt-2 text-2xl font-bold font-display">{stats.assignedToMeCount}</p>
           <Link
             to="/responder/assigned"
-            className="text-xs font-medium text-primary hover:underline mt-0.5 inline-block"
+            className="text-xs font-medium text-primary hover:underline mt-1 inline-block"
           >
-            View my active cases →
+            View my cases →
           </Link>
         </div>
 
-        <div className="rounded-xl border border-l-4 border-l-warning tactical-card p-4">
-          <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-            <span>Unassigned</span>
-            <Siren className="h-4 w-4 text-warning" />
-          </div>
-          <p className="mt-2 text-2xl font-extrabold font-mono">{stats.unassignedCount}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Ready for responder pickup</p>
-        </div>
-
-        <div className="rounded-xl border border-l-4 border-l-success tactical-card p-4">
-          <div className="flex items-center justify-between font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-xl border bg-card p-5 shadow-2xs">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
             <span>Resolved Today</span>
             <CheckCircle2 className="h-4 w-4 text-success" />
           </div>
-          <p className="mt-2 text-2xl font-extrabold font-mono text-success">
-            {stats.resolvedTodayCount}
-          </p>
+          <p className="mt-2 text-2xl font-bold font-display">{stats.resolvedTodayCount}</p>
           <Link
             to="/responder/history"
-            className="text-xs text-muted-foreground hover:underline mt-0.5 inline-block"
+            className="text-xs text-muted-foreground hover:underline mt-1 inline-block"
           >
-            View response history →
+            View history →
           </Link>
         </div>
       </div>
 
-      <div className="rounded-2xl border tactical-card p-5 space-y-4">
+      <div className="rounded-2xl border bg-card p-6 space-y-4 shadow-2xs">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-display font-bold text-base">Priority Triage Queue</h2>
-            <p className="text-xs text-muted-foreground">
-              Sorted by severity (Critical first) and live submission timestamp
-            </p>
+            <h2 className="font-semibold text-base text-foreground">Priority Triage Queue</h2>
+            <p className="text-xs text-muted-foreground">Ordered by severity and time of report</p>
           </div>
           <Button asChild variant="outline" size="sm">
             <Link to="/responder/incidents">
-              Full Queue <ArrowRight className="h-3.5 w-3.5 ml-1" />
+              View All <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Link>
           </Button>
         </div>
@@ -155,22 +142,24 @@ function ResponderDashboard() {
             hint="All reported emergencies and assistance requests have been resolved."
           />
         ) : (
-          <div className="divide-y rounded-xl border bg-background/40 overflow-hidden">
+          <div className="divide-y rounded-xl border">
             {stats.priorityQueue.map((inc) => (
               <Link
                 key={inc.id}
                 to="/responder/incidents/$incidentId"
                 params={{ incidentId: inc.id }}
-                className="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-muted/50 transition-colors border-l-4 border-l-transparent hover:border-l-primary"
+                className="flex flex-wrap items-center justify-between gap-4 p-4 hover:bg-muted/40 transition-colors"
               >
                 <div className="space-y-1 min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-primary">{inc.ref}</span>
+                    <span className="font-mono text-xs font-semibold text-muted-foreground">
+                      {inc.ref}
+                    </span>
                     <SeverityBadge severity={inc.severity} />
-                    <span className="rounded-md border bg-secondary/60 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase">
+                    <span className="rounded bg-secondary px-2 py-0.5 text-[11px] font-medium">
                       {KIND_LABEL[inc.kind]}
                     </span>
-                    <span className="font-semibold text-sm">{inc.category}</span>
+                    <span className="font-semibold text-sm text-foreground">{inc.category}</span>
                   </div>
                   {inc.description && (
                     <p className="text-xs text-muted-foreground line-clamp-1">{inc.description}</p>
@@ -178,16 +167,14 @@ function ResponderDashboard() {
                   <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     <span>
                       Reporter:{" "}
-                      <strong className="text-foreground">
+                      <strong className="text-foreground font-medium">
                         {inc.reporter?.full_name || inc.reporter?.email || "Tourist"}
                       </strong>
                     </span>
-                    <span className="font-mono">
-                      · {format(new Date(inc.created_at), "MMM d, HH:mm")}
-                    </span>
-                    {inc.location_text && <span>· 📍 {inc.location_text}</span>}
+                    <span>· {format(new Date(inc.created_at), "MMM d, HH:mm")}</span>
+                    {inc.location_text && <span>· {inc.location_text}</span>}
                     {inc.assigned_responder_id === user.id && (
-                      <span className="text-primary font-semibold">· Assigned to you</span>
+                      <span className="text-primary font-medium">· Assigned to you</span>
                     )}
                   </div>
                 </div>

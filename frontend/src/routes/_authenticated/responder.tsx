@@ -4,13 +4,13 @@ import { AppShell, type NavItem } from "@/components/app/AppShell";
 import { roleHome } from "@/lib/constants";
 
 const NAV: NavItem[] = [
-  { to: "/responder", label: "🏠 Dashboard", icon: Home, exact: true },
-  { to: "/responder/incidents", label: "🚨 Active Incidents", icon: Siren },
-  { to: "/responder/assigned", label: "📋 Assigned Incidents", icon: ClipboardCheck },
-  { to: "/responder/map", label: "🗺️ Live Map", icon: Map },
-  { to: "/responder/notifications", label: "🔔 Notifications", icon: Bell },
-  { to: "/responder/history", label: "📜 Incident History", icon: History },
-  { to: "/responder/profile", label: "👤 Profile", icon: User },
+  { to: "/responder", label: "Dashboard", icon: Home, exact: true },
+  { to: "/responder/incidents", label: "Active Incidents", icon: Siren },
+  { to: "/responder/assigned", label: "Assigned Incidents", icon: ClipboardCheck },
+  { to: "/responder/map", label: "Live Map", icon: Map },
+  { to: "/responder/notifications", label: "Notifications", icon: Bell },
+  { to: "/responder/history", label: "Incident History", icon: History },
+  { to: "/responder/profile", label: "Profile", icon: User },
 ];
 
 export const Route = createFileRoute("/_authenticated/responder")({
