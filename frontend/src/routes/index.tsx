@@ -145,9 +145,7 @@ function LandingPage() {
 
               <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-balance">
                 Travel with confidence. <br className="hidden sm:inline" />
-                <span className="bg-gradient-to-r from-primary via-emerald-400 to-destructive bg-clip-text text-transparent">
-                  Help when it matters.
-                </span>
+                <span className="text-primary">Help when it matters.</span>
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">

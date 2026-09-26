@@ -199,7 +199,7 @@ function TouristDashboard() {
           </Link>
         </div>
       ) : (
-        <div className="relative overflow-hidden rounded-2xl border border-destructive/50 bg-gradient-to-br from-destructive/20 via-card to-card p-6 sm:p-8 glow-crimson">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-destructive/45 bg-card p-6 sm:p-8 shadow-sm">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2.5 text-center md:text-left">
               <div className="inline-flex items-center gap-2 rounded-full bg-destructive px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-destructive-foreground shadow-xs">
@@ -218,7 +218,7 @@ function TouristDashboard() {
               <Button
                 variant="destructive"
                 size="lg"
-                className="w-full md:w-auto h-16 px-10 text-lg font-extrabold tracking-wider shadow-xl glow-crimson hover:scale-105 transition-transform"
+                className="w-full md:w-auto h-16 px-10 text-lg font-extrabold tracking-wider shadow-lg hover:scale-105 transition-transform"
               >
                 <Siren className="mr-2.5 h-7 w-7 animate-pulse" />
                 TRIGGER SOS NOW
@@ -314,7 +314,7 @@ function TouristDashboard() {
       {/* 6. 🗺️ Quick Access to Map & 7. 🆘 Emergency Contacts */}
       <div className="grid gap-6 lg:grid-cols-12">
         {/* 🗺️ Quick Access to Map (5 cols) */}
-        <div className="lg:col-span-5 rounded-xl border bg-gradient-to-br from-primary/10 via-card to-card p-5 flex flex-col justify-between gap-4 shadow-2xs">
+        <div className="lg:col-span-5 rounded-xl border bg-card p-5 flex flex-col justify-between gap-4 shadow-2xs">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">

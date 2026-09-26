@@ -169,10 +169,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    background-image:
-      radial-gradient(circle at 15% 0%, oklch(0.63 0.23 18 / 0.06), transparent 38%),
-      radial-gradient(circle at 85% 10%, oklch(0.72 0.14 210 / 0.07), transparent 42%);
-    background-attachment: fixed;
   }
 
   h1,
@@ -188,42 +184,24 @@
   }
 }
 
-/* Stitch Tactical Command Surface Utilities */
+/* Stitch Tactical Command Surface Utilities (Solid Matte Surfaces, No Heavy Gradients) */
 .bg-tactical-grid {
-  background-size: 32px 32px;
-  background-image:
-    linear-gradient(to right, oklch(0.5 0.05 240 / 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.5 0.05 240 / 0.06) 1px, transparent 1px);
-}
-
-.dark .bg-tactical-grid {
-  background-image:
-    linear-gradient(to right, oklch(0.9 0.02 240 / 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.9 0.02 240 / 0.045) 1px, transparent 1px);
+  background-color: var(--color-background);
 }
 
 .tactical-card {
-  background-color: color-mix(in oklab, var(--card) 88%, transparent);
-  backdrop-filter: blur(16px);
-  box-shadow:
-    0 1px 0 0 oklch(1 0 0 / 0.06) inset,
-    0 10px 30px -10px oklch(0 0 0 / 0.2);
+  background-color: var(--card);
+  box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.12);
 }
 
 .glow-crimson {
-  box-shadow:
-    0 0 0 1px oklch(0.63 0.23 18 / 0.35),
-    0 0 28px -4px oklch(0.63 0.23 18 / 0.28);
+  box-shadow: 0 0 0 1px oklch(0.63 0.23 18 / 0.25);
 }
 
 .glow-emerald {
-  box-shadow:
-    0 0 0 1px oklch(0.68 0.16 162 / 0.35),
-    0 0 22px -4px oklch(0.68 0.16 162 / 0.22);
+  box-shadow: 0 0 0 1px oklch(0.68 0.16 162 / 0.25);
 }
 
 .glow-cyan {
-  box-shadow:
-    0 0 0 1px oklch(0.72 0.14 210 / 0.35),
-    0 0 22px -4px oklch(0.72 0.14 210 / 0.22);
+  box-shadow: 0 0 0 1px oklch(0.72 0.14 210 / 0.25);
 }

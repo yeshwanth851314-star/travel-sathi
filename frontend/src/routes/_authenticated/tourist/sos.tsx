@@ -116,7 +116,7 @@ function TouristSosPage() {
       </div>
 
       {/* Big Red SOS Button Container */}
-      <div className="rounded-3xl border-2 border-destructive/40 bg-gradient-to-b from-destructive/15 via-card to-background p-8 sm:p-12 text-center shadow-lg space-y-6">
+      <div className="rounded-3xl border-2 border-destructive/40 bg-card p-8 sm:p-12 text-center shadow-lg space-y-6">
         <div className="relative inline-flex items-center justify-center">
           <div className="absolute h-48 w-48 rounded-full bg-destructive/20 animate-ping" />
           <div className="absolute h-40 w-40 rounded-full bg-destructive/30" />
