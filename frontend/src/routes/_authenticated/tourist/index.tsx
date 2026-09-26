@@ -24,7 +24,7 @@ import {
   useAlerts,
   useProfile,
   useResources,
-  useContacts,
+  useEmergencyContacts,
   useSafetyInfo,
 } from "@/lib/queries";
 import { getLocation } from "@/lib/geo";
@@ -53,9 +53,9 @@ function TouristDashboard() {
   const { user } = Route.useRouteContext();
   const { data: profile } = useProfile(user.id);
   const { data: incidents } = useIncidents({ reporterId: user.id });
-  const { data: alerts } = useAlerts(true);
-  const { data: announcements } = useSafetyInfo(true);
-  const { data: contacts } = useContacts(user.id);
+  const { data: alerts } = useAlerts(false);
+  const { data: announcements } = useSafetyInfo();
+  const { data: contacts } = useEmergencyContacts(user.id);
   const { data: resources } = useResources();
 
   const [coords, setCoords] = useState<{
@@ -397,12 +397,14 @@ function TouristDashboard() {
                       {c.relationship || "Trusted Contact"} · {c.phone}
                     </p>
                   </div>
-                  <a
-                    href={`tel:${c.phone}`}
-                    className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20"
-                  >
-                    <Phone className="h-3 w-3" /> Call
-                  </a>
+                  {c.phone && (
+                    <a
+                      href={`tel:${c.phone}`}
+                      className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20"
+                    >
+                      <Phone className="h-3 w-3" /> Call
+                    </a>
+                  )}
                 </div>
               ))}
             </div>

@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 function AdminDashboard() {
   const { data: users, isLoading: uLoad, error: uErr } = useAllUsers();
   const { data: incidents, isLoading: iLoad, error: iErr } = useIncidents();
-  const { data: alerts } = useAlerts(false);
+  const { data: alerts } = useAlerts(true);
   const { data: resources } = useResources();
   const { data: safetyInfo } = useSafetyInfo();
   const { data: audits } = useAuditLogs();
